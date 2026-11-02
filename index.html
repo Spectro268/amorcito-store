@@ -2,12 +2,19 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Amorcito Store</title>
+  
+  <!-- FAVICON -->
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- FIREBASE SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Dancing+Script:wght@700&display=swap');
 
-    /* Carga de Fuentes Locales */
     @font-face {
       font-family: 'Ananias';
       src: url('Ananias.ttf') format('truetype');
@@ -31,115 +38,108 @@
       --text-dark: #333;
     }
     
-    body {
-      margin: 0;
+    /* RESET & ANTI-SCROLLBAR */
+    html, body {
+      margin: 0; padding: 0; width: 100%;
       font-family: 'Poppins', sans-serif;
       background-color: var(--pink-bg);
       overflow-x: hidden;
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+    html::-webkit-scrollbar, body::-webkit-scrollbar {
+      display: none;
     }
     
+    a, button { -webkit-tap-highlight-color: transparent; }
+
     /* -------------------------------------------
-       BARRA SUPERIOR FIJA (STICKY)
+       BARRA SUPERIOR (NAVBAR)
        ------------------------------------------- */
     .top-bar {
       position: sticky;
-      top: 0;
-      z-index: 1000;
+      top: 0; z-index: 1000;
       background: linear-gradient(to bottom, var(--pink-gradient-light) 0%, white 100%);
-      text-align: center;
-      padding: 15px 20px;
-      color: var(--pink-header);
-      display: flex;
-      justify-content: center;
+      padding: 12px 15px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
       box-shadow: 0 4px 15px rgba(223, 88, 139, 0.15);
     }
 
-    .top-bar-title {
-      font-family: 'Ananias', sans-serif;
-      font-size: 1.5rem;
-      letter-spacing: 2px;
-      margin: 0;
+    .top-left-icons {
+      display: flex; gap: 10px; justify-self: start;
     }
 
-    /* Ícono de Campana Matemático */
-    .notification-btn {
-      position: absolute;
-      left: 20px;
-      background: white;
-      color: var(--pink-header);
-      border: none;
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(223, 88, 139, 0.2);
+    .nav-btn-circle {
+      background: white; color: var(--pink-header);
+      border: none; width: 40px; height: 40px;
+      border-radius: 50%; display: flex;
+      justify-content: center; align-items: center;
+      cursor: pointer; box-shadow: 0 4px 10px rgba(223, 88, 139, 0.2);
       transition: transform 0.2s, background 0.2s;
+      position: relative;
     }
-    .notification-btn svg {
-      width: 24px;
-      height: 24px;
-      fill: var(--pink-header);
+    .nav-btn-circle svg { width: 22px; height: 22px; fill: var(--pink-header); }
+    .nav-btn-circle:hover { transform: scale(1.05); background: var(--pink-bg); }
+
+    /* Punto rojo de nueva notificación */
+    .noti-badge {
+      display: none; position: absolute; top: 0; right: 0;
+      width: 12px; height: 12px; background: red;
+      border-radius: 50%; border: 2px solid white;
     }
-    .notification-btn:hover { 
-      transform: scale(1.05); 
-      background: var(--pink-bg);
+
+    .top-bar-title {
+      font-family: 'Ananias', sans-serif; font-size: 1.2rem;
+      letter-spacing: 2px; margin: 0; color: var(--pink-header);
+      justify-self: center; text-align: center;
     }
+
+    .top-right-actions {
+      display: flex; gap: 10px; justify-self: end; align-items: center;
+    }
+
+    .btn-pill {
+      background: white; color: var(--pink-header);
+      border: none; padding: 8px 15px; border-radius: 20px;
+      font-weight: 700; font-size: 0.85rem; cursor: pointer;
+      box-shadow: 0 4px 10px rgba(223, 88, 139, 0.2);
+      transition: transform 0.2s;
+    }
+    .btn-pill:hover { transform: scale(1.05); background: var(--pink-bg); }
+
+    /* Botón Admin Oculto */
+    #btn-admin-panel { display: none; background: #333; color: #fff; }
 
     /* -------------------------------------------
-       ENCABEZADO: BURBUJAS FLOTANTES
+       HEADER: BURBUJAS FLOTANTES
        ------------------------------------------- */
     .hero-banner {
       position: relative;
       background: linear-gradient(135deg, var(--pink-soft), var(--pink-header));
-      color: white;
-      text-align: center;
-      padding: 60px 20px;
-      overflow: hidden;
+      color: white; text-align: center;
+      padding: 50px 15px; overflow: hidden;
     }
     
     .hero-banner h1 {
-      font-size: clamp(2.5rem, 6vw, 3.5rem);
-      margin: 0 0 10px;
-      font-weight: 800;
-      position: relative;
-      z-index: 2;
+      font-size: clamp(2rem, 6vw, 3rem);
+      margin: 0 0 10px; font-weight: 800;
+      position: relative; z-index: 2;
     }
     
     .hero-banner p {
-      font-size: 1.1rem;
-      margin: 0;
-      opacity: 0.95;
-      position: relative;
-      z-index: 2;
+      font-size: 1rem; margin: 0; opacity: 0.95;
+      position: relative; z-index: 2;
     }
 
-    /* Burbujas Suaves de Fondo */
     .circle-deco {
-      position: absolute;
-      border-radius: 50%;
+      position: absolute; border-radius: 50%;
       background: rgba(255, 255, 255, 0.15);
       animation: floatSmooth 12s ease-in-out infinite alternate;
     }
-    
-    .circle-1 {
-      width: 300px;
-      height: 300px;
-      top: -50px;
-      left: -100px;
-    }
-    
-    .circle-2 {
-      width: 250px;
-      height: 250px;
-      bottom: -80px;
-      right: -50px;
-      animation-duration: 15s;
-      animation-delay: -5s;
-    }
+    .circle-1 { width: 300px; height: 300px; top: -50px; left: -100px; }
+    .circle-2 { width: 250px; height: 250px; bottom: -80px; right: -50px; animation-duration: 15s; animation-delay: -5s; }
 
     @keyframes floatSmooth {
       0% { transform: translate(0, 0) scale(1); }
@@ -148,186 +148,121 @@
     }
     
     /* -------------------------------------------
-       CATÁLOGO DE JUEGOS
+       SECCIONES DE VISTA (SPA)
        ------------------------------------------- */
-    .games-section {
-      text-align: center;
-      padding: 60px 20px 0px;
-      position: relative;
+    .view-section { display: none; animation: fadeIn 0.3s ease; }
+    .view-section.activa { display: block; }
+    @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
+
+    .main-container { padding: 40px 15px 0px; text-align: center; min-height: 50vh; }
+    .cursive-title { font-family: 'Dancing Script', cursive; font-size: clamp(2.5rem, 8vw, 3.5rem); color: var(--pink-header); margin-bottom: 25px; }
+
+    /* -------------------------------------------
+       HUB PRINCIPAL: DOS UNIVERSOS
+       ------------------------------------------- */
+    .hub-grid {
+      display: flex; justify-content: center; gap: 20px;
+      flex-wrap: wrap; margin-bottom: 40px;
+    }
+
+    .hub-card {
+      background: white; border-radius: 20px; padding: 15px; width: 300px;
+      text-align: center; box-shadow: 0 10px 25px rgba(223, 88, 139, 0.15);
+      transition: transform 0.3s ease; cursor: pointer; border: 2px solid transparent;
+    }
+    .hub-card:hover { transform: translateY(-5px); border-color: var(--pink-soft); }
+    
+    .hub-img {
+      width: 100%; height: 160px; border-radius: 12px; margin-bottom: 15px;
+      background-size: cover; background-position: center;
     }
     
-    .cursive-title {
-      font-family: 'Dancing Script', cursive;
-      font-size: 3.5rem;
-      color: var(--pink-header);
-      margin-bottom: 25px;
+    .hub-card h3 { margin: 0 0 10px; font-size: 1.5rem; font-weight: 800; }
+    .hub-card.canva h3 { color: var(--pink-header); }
+    .hub-card.boo h3 { font-family: 'Shlop', system-ui; font-size: 2.2rem; color: #512b81; letter-spacing: 2px;}
+
+    /* -------------------------------------------
+       CATÁLOGO CANVA (SUBVISTA)
+       ------------------------------------------- */
+    .btn-volver {
+      background: transparent; color: var(--pink-header); border: 2px solid var(--pink-header);
+      padding: 8px 20px; border-radius: 20px; cursor: pointer; font-weight: 700;
+      margin-bottom: 30px; transition: 0.2s;
     }
-    
-    /* Etiqueta de Catálogo (Estática, sin hover) */
-    .btn-catalog {
-      display: inline-block;
-      background: white;
-      color: var(--pink-header);
-      border: 1px solid var(--pink-bg);
-      padding: 12px 35px;
-      border-radius: 25px;
-      font-weight: 600;
-      font-size: 1.2rem;
-      box-shadow: 0 4px 10px rgba(223, 88, 139, 0.15);
-      margin-bottom: 50px;
-      pointer-events: none; /* Inhabilita clicks y hover */
-    }
-    
-    /* Tarjetas Originales */
-    .cards-grid {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      flex-wrap: wrap;
-      margin-bottom: 30px;
-    }
-    
+    .btn-volver:hover { background: var(--pink-header); color: white; }
+
+    .cards-grid { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
     .card {
-      background: white;
-      border-radius: 20px;
-      padding: 15px;
-      width: 280px;
-      text-align: left;
-      box-shadow: 0 10px 25px rgba(223, 88, 139, 0.1);
-      transition: transform 0.3s ease;
+      background: white; border-radius: 20px; padding: 15px; width: 280px;
+      text-align: left; box-shadow: 0 10px 25px rgba(223, 88, 139, 0.1);
     }
-    
-    .card:hover { transform: translateY(-5px); }
-    
-    .card-img {
-      width: 100%;
-      height: 140px;
-      background: #f0f0f0;
-      border-radius: 12px;
-      margin-bottom: 15px;
-      object-fit: cover;
-    }
-    
-    .card h3 {
-      margin: 0 0 10px;
-      color: var(--pink-header);
-      font-size: 1.4rem;
-      font-weight: 800;
-    }
-    
-    .badge {
-      background: var(--pink-bg);
-      color: var(--pink-header);
-      font-size: 0.8rem;
-      padding: 5px 12px;
-      border-radius: 15px;
-      display: inline-block;
-      margin-bottom: 20px;
-      font-weight: 700;
-    }
-    
+    .card-img { width: 100%; height: 140px; border-radius: 12px; margin-bottom: 15px; background-size: cover; background-position: center; }
+    .card h3 { margin: 0 0 10px; color: var(--pink-header); font-size: 1.3rem; font-weight: 800; }
+    .badge { background: var(--pink-bg); color: var(--pink-header); font-size: 0.75rem; padding: 5px 12px; border-radius: 15px; display: inline-block; margin-bottom: 20px; font-weight: 700; }
     .btn-play {
-      display: block;
-      text-align: center;
-      background: white;
-      color: var(--pink-header);
-      border: 2px solid var(--pink-bg);
-      padding: 12px;
-      border-radius: 25px;
-      font-weight: 700;
-      font-size: 1.1rem;
-      text-decoration: none;
-      box-shadow: 0 4px 10px rgba(223, 88, 139, 0.1);
-      transition: all 0.2s;
+      display: block; text-align: center; background: white; color: var(--pink-header);
+      border: 2px solid var(--pink-bg); padding: 10px; border-radius: 25px;
+      font-weight: 700; text-decoration: none; transition: all 0.2s; cursor: pointer;
     }
-    
-    .btn-play:hover {
-      background: var(--pink-header);
-      color: white;
-      border-color: var(--pink-header);
-    }
-    
+    .btn-play:hover { background: var(--pink-header); color: white; border-color: var(--pink-header); }
+
     /* -------------------------------------------
-       TRANSICIÓN SÓLIDA DE ONDAS (Sin degradados rectos)
+       MODALES GLOBALES (Notis y Admin)
        ------------------------------------------- */
-    .waves-container {
-      width: 100%;
-      line-height: 0;
-      font-size: 0;
-      margin-top: -20px;
-      margin-bottom: -5px;
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+      z-index: 2000; justify-content: center; align-items: center;
+      backdrop-filter: blur(4px);
+    }
+    .modal-overlay.activo { display: flex; }
+    .modal-box {
+      background: var(--pink-bg); border-radius: 20px; padding: 25px; width: 90%; max-width: 500px;
+      max-height: 85vh; overflow-y: auto; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+    .btn-cerrar {
+      background: var(--pink-header); color: white; border: none; padding: 10px 20px;
+      border-radius: 15px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px;
+    }
+
+    /* Bandeja de Notificaciones (Estilo Rosa) */
+    .noti-header-modal {
+      text-align: center; color: white; font-size: 1.8rem; font-weight: 800;
+      text-shadow: 2px 2px 0px var(--pink-soft); margin: 0 0 15px 0;
+    }
+    .noti-divider {
+      text-align: center; color: white; font-size: 0.9rem; font-weight: bold;
+      margin-bottom: 20px; letter-spacing: 2px;
     }
     
-    .waves {
-      display: block;
-      width: 100%;
-      height: auto;
+    .noti-item {
+      background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px;
+      text-align: left; box-shadow: 0 4px 10px rgba(223,88,139,0.1);
     }
-    
+    .noti-item h4 { margin: 0 0 10px 0; color: var(--pink-header); font-size: 1.2rem; }
+    .noti-item .version { font-size: 0.8rem; color: var(--pink-soft); float: right; font-weight: bold;}
+    .noti-item p { font-size: 0.95rem; color: #555; line-height: 1.5; margin: 10px 0; white-space: pre-wrap;}
+    .noti-img { width: 100%; border-radius: 8px; margin-top: 10px; display: none; }
+
+    /* Formulario Admin */
+    .admin-form input, .admin-form textarea {
+      width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px;
+      border: 2px solid var(--pink-soft); font-family: inherit; box-sizing: border-box;
+    }
+    .admin-form button {
+      background: #333; color: white; padding: 12px; width: 100%; border: none;
+      border-radius: 8px; font-weight: bold; cursor: pointer;
+    }
+
     /* -------------------------------------------
-       MANSIÓN OSCURA
+       CIERRE: ONDAS SÓLIDAS
        ------------------------------------------- */
-    .mansion-section {
-      background-color: var(--dark-bg);
-      background-image: url('casaembrujada.png');
-      background-size: cover;
-      background-position: center bottom;
-      background-repeat: no-repeat;
-      color: white;
-      text-align: center;
-      padding: 100px 20px 120px;
-      position: relative;
-      min-height: 500px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
+    .waves-container { width: 100%; line-height: 0; font-size: 0; margin-top: auto; }
+    .waves { display: block; width: 100%; height: auto; }
 
-    /* Solo se oscurece ligeramente para que el texto resalte, sin líneas rectas arriba */
-    .mansion-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.3);
-      z-index: 1;
-    }
-    
-    .mansion-content {
-      position: relative;
-      z-index: 2;
-    }
-
-    /* Título con la fuente Shlop */
-    .mansion-section h2 {
-      font-family: 'Shlop', system-ui;
-      font-size: clamp(4rem, 9vw, 6rem);
-      margin-bottom: 30px;
-      line-height: 1;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      color: #fff;
-      text-shadow: 3px 3px 8px rgba(0,0,0,0.8), -2px -2px 5px rgba(142, 68, 173, 0.6);
-    }
-    
-    /* Botón al estilo de tu imagen de referencia */
-    .btn-enter {
-      background: #9b59b6; 
-      color: #000;
-      border: 4px solid #111; 
-      padding: 12px 50px;
-      font-size: 1.8rem;
-      cursor: pointer;
-      border-radius: 8px;
-      text-transform: uppercase;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.6);
-      transition: all 0.2s;
-      font-family: 'Shlop', system-ui;
-      letter-spacing: 2px;
-    }
-
-    .btn-enter:hover {
-      background: #8e44ad;
-      transform: scale(1.05);
+    @media(max-width: 600px) {
+      .top-bar { padding: 10px; }
+      .nav-btn-circle { width: 35px; height: 35px; }
+      .btn-pill { padding: 6px 12px; font-size: 0.8rem; }
     }
   </style>
 </head>
@@ -335,70 +270,242 @@
 
   <!-- Barra Superior -->
   <div class="top-bar">
-    <!-- Ícono SVG de la Campana Matemática -->
-    <button class="notification-btn" aria-label="Notificaciones">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.36 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.63 5.36 6 7.92 6 11V16L4 18V19H20V18L18 16Z"/>
-      </svg>
-    </button>
+    
+    <div class="top-left-icons">
+      <!-- Campana -->
+      <button class="nav-btn-circle" onclick="abrirBandeja()">
+        <svg viewBox="0 0 24 24"><path d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.36 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.63 5.36 6 7.92 6 11V16L4 18V19H20V18L18 16Z"/></svg>
+        <div class="noti-badge" id="badge-campana"></div>
+      </button>
+      
+      <!-- Tienda -->
+      <button class="nav-btn-circle" onclick="alert('Tienda en construcción (Fase 2)')">
+        <svg viewBox="0 0 24 24"><path d="M7 18C5.9 18 5.01 18.9 5.01 20C5.01 21.1 5.9 22 7 22C8.1 22 9 21.1 9 20C9 18.9 8.1 18 7 18ZM1 2V4H3L6.6 11.59L5.24 14.04C5.09 14.32 5 14.65 5 15C5 16.1 5.9 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.58 17.3 11.97L20.88 5.48C20.95 5.34 21 5.17 21 5C21 4.45 20.55 4 20 4H5.21L4.27 2H1ZM17 18C15.9 18 15.01 18.9 15.01 20C15.01 21.1 15.9 22 17 22C18.1 22 19 21.1 19 20C19 18.9 18.1 18 17 18Z"/></svg>
+      </button>
+      
+      <!-- Inventario/Mochila -->
+      <button class="nav-btn-circle" onclick="alert('Inventario en construcción (Fase 2)')">
+        <svg viewBox="0 0 24 24"><path d="M20 6H17V4C17 2.9 16.1 2 15 2H9C7.9 2 7 2.9 7 4V6H4C2.9 6 2 6.9 2 8V19C2 20.1 2.9 21 4 21H20C21.1 21 22 20.1 22 19V8C22 6.9 21.1 6 20 6ZM9 4H15V6H9V4ZM20 19H4V8H20V19Z"/></svg>
+      </button>
+    </div>
+
     <h2 class="top-bar-title">INICIO</h2>
+    
+    <div class="top-right-actions">
+      <button class="btn-pill" id="btn-admin-panel" onclick="abrirAdmin()">⚙️ Admin</button>
+      <button class="btn-pill" onclick="alert('Colección en construcción (Fase 2)')">Colección</button>
+    </div>
+    
   </div>
   
-  <!-- Encabezado con Burbujas -->
+  <!-- Encabezado -->
   <header class="hero-banner">
     <div class="circle-deco circle-1"></div>
     <div class="circle-deco circle-2"></div>
-    
     <h1>AMORCITO STORE</h1>
     <p>Historias, preguntas y sorpresas para compartir juntos.</p>
   </header>
   
-  <!-- Catálogo de Juegos -->
-  <section class="games-section">
-    <div class="cursive-title">Pequeños juegos hechos para nosotros ♥</div>
+  <!-- VISTA 1: HUB PRINCIPAL -->
+  <main id="vista-hub" class="view-section activa main-container">
+    <div class="cursive-title">Elige tu destino ♥</div>
     
-    <!-- Etiqueta decorativa inactiva -->
-    <div class="btn-catalog">Catálogo de juegos</div>
-    
-    <div class="cards-grid">
-      <!-- Tarjeta 1 -->
-      <div class="card">
-        <div class="card-img" style="background-image: url('imagen-san-valentin.jpg'); background-size: cover; background-position: center;"></div>
-        <h3>San Valentín</h3>
-        <div class="badge">♥ Primero en esta página</div>
-        <a href="#" class="btn-play">Jugar</a>
+    <div class="hub-grid">
+      <!-- Tarjeta Canva Store -->
+      <div class="hub-card canva" onclick="cambiarVista('vista-canva')">
+        <div class="hub-img" style="background-image: url('citasimagen.jpeg');"></div>
+        <h3>Canva Store</h3>
+        <p style="margin:0; font-size:0.9rem; opacity:0.8;">Juegos de preguntas y recuerdos hechos a mano.</p>
       </div>
       
-      <!-- Tarjeta 2 -->
+      <!-- Tarjeta Boo Store (Link a tu evento) -->
+      <div class="hub-card boo" onclick="window.location.href='https://TU-USUARIO.github.io/boo-store/'">
+        <div class="hub-img" style="background-image: url('amuletosimagen.jpeg');"></div>
+        <h3>BOO! STORE</h3>
+        <p style="margin:0; font-size:0.9rem; opacity:0.8;">La mansión del terror. Entra bajo tu propio riesgo.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- VISTA 2: CATÁLOGO CANVA -->
+  <section id="vista-canva" class="view-section main-container">
+    <button class="btn-volver" onclick="cambiarVista('vista-hub')">⬅ Volver al Inicio</button>
+    <div class="cursive-title">Pequeños juegos hechos para nosotros</div>
+    
+    <div class="cards-grid">
       <div class="card">
-        <div class="card-img" style="background-image: url('imagen-primavera.jpg'); background-size: cover; background-position: center;"></div>
+        <div class="card-img" style="background-image: url('imagen-san-valentin.jpg');"></div>
+        <h3>San Valentín</h3>
+        <div class="badge">♥ Primero en esta página</div>
+        <button class="btn-play">Jugar</button>
+      </div>
+      
+      <div class="card">
+        <div class="card-img" style="background-image: url('imagen-primavera.jpg');"></div>
         <h3>Primavera del amor</h3>
         <div class="badge">♥ Más reciente</div>
-        <a href="#" class="btn-play">Jugar</a>
+        <button class="btn-play">Jugar</button>
       </div>
     </div>
   </section>
 
-  <!-- Ondas Sólidas conectando los mundos (Sin espacio blanco ni degradados) -->
+  <!-- CIERRE DE ONDAS SÓLIDAS -->
   <div class="waves-container">
     <svg class="waves" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
-      <!-- Onda 1: Rosa oscuro -->
       <path fill="#d84572" fill-opacity="1" d="M0,128L48,138.7C96,149,192,171,288,160C384,149,480,107,576,112C672,117,768,171,864,181.3C960,192,1056,160,1152,138.7C1248,117,1344,107,1392,101.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-      <!-- Onda 2: Morado -->
       <path fill="#7a285c" fill-opacity="1" d="M0,224L48,229.3C96,235,192,245,288,234.7C384,224,480,192,576,176C672,160,768,160,864,170.7C960,181,1056,203,1152,202.7C1248,203,1344,181,1392,170.7L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-      <!-- Onda 3: El color de fondo oscuro de la mansión conectando abajo -->
       <path fill="#1a0b2e" fill-opacity="1" d="M0,288L48,272C96,256,192,224,288,218.7C384,213,480,235,576,245.3C672,256,768,256,864,245.3C960,235,1056,213,1152,208C1248,203,1344,213,1392,218.7L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
     </svg>
   </div>
 
-  <!-- Sección Mansión -->
-  <section class="mansion-section">
-    <div class="mansion-overlay"></div>
-    <div class="mansion-content">
-      <h2>ENTRAR EN LA<br>MANSIÓN</h2>
-      <button class="btn-enter">Entrar</button>
-    </div>
-  </section>
+  <!-- MODAL: BANDEJA DE ENTRADA (GRETA) -->
+  <div class="modal-overlay" id="modal-notis">
+    <div class="modal-box" style="background: var(--pink-soft);">
+      <h3 class="noti-header-modal">BANDEJA DE ENTRADA</h3>
+      <div class="noti-divider">MÁS RECIENTE</div>
+      
+      <div id="lista-notis">
+        <!-- Las notificaciones cargan aquí desde Firebase -->
+        <p style="color:white; text-align:center;">Buscando magia...</p>
+      </div>
 
+      <button class="btn-cerrar" onclick="document.getElementById('modal-notis').classList.remove('activo')">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- MODAL: PANEL ADMIN (OCULTO) -->
+  <div class="modal-overlay" id="modal-admin">
+    <div class="modal-box admin-form">
+      <h3 style="margin-top:0; color:var(--pink-header); text-align:center;">Crear Notificación</h3>
+      <input type="text" id="noti-titulo" placeholder="Título (ej: ¡Nuevo Diseño!)">
+      <input type="text" id="noti-version" placeholder="Versión (ej: Actualización 2.0.0)">
+      <textarea id="noti-texto" rows="4" placeholder="Escribe el mensaje detallado aquí..."></textarea>
+      <input type="text" id="noti-img" placeholder="Nombre de imagen en GitHub (Opcional, ej: update.png)">
+      <button onclick="publicarNotificacion()">🚀 Publicar en Bandeja</button>
+      <button class="btn-cerrar" style="background: #999;" onclick="document.getElementById('modal-admin').classList.remove('activo')">Cancelar</button>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // 1. CONFIGURACIÓN FIREBASE
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyC2G-ZRqI0lHCqxKFfkUY0haaRyjEpH3Gs",
+      authDomain: "amorcito-store.firebaseapp.com",
+      databaseURL: "https://amorcito-store-default-rtdb.firebaseio.com",
+      projectId: "amorcito-store",
+      storageBucket: "amorcito-store.firebasestorage.app",
+      messagingSenderId: "696411365971",
+      appId: "1:696411365971:web:5d43fdce234627985d1ca6"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    
+    // Variables de control
+    let notificacionesGlobales = [];
+    let ultimaVista = localStorage.getItem('ultimaNotiId') || 0;
+
+    // ==========================================
+    // 2. MODO ADMINISTRADOR (ENLACE SECRETO)
+    // ==========================================
+    const urlParams = new URLSearchParams(window.location.search);
+    if(urlParams.get('modo') === 'admin') {
+      document.getElementById('btn-admin-panel').style.display = 'block';
+    }
+
+    // ==========================================
+    // 3. LOGICA DE NAVEGACIÓN (SPA)
+    // ==========================================
+    function cambiarVista(idVista) {
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('activa'));
+      document.getElementById(idVista).classList.add('activa');
+      window.scrollTo(0,0);
+    }
+
+    // ==========================================
+    // 4. LÓGICA DE NOTIFICACIONES (FIREBASE)
+    // ==========================================
+    
+    // Leer datos en tiempo real
+    database.ref('notificaciones_globales').on('value', (snapshot) => {
+      const data = snapshot.val();
+      const contenedor = document.getElementById('lista-notis');
+      const badge = document.getElementById('badge-campana');
+      
+      if(data) {
+        // Convertir objeto de firebase a array y ordenar de más nuevo a más viejo
+        notificacionesGlobales = Object.values(data).sort((a, b) => b.timestamp - a.timestamp);
+        
+        contenedor.innerHTML = '';
+        notificacionesGlobales.forEach(noti => {
+          let imgTag = noti.imagen ? `<img src="${noti.imagen}" class="noti-img" style="display:block;">` : '';
+          contenedor.innerHTML += `
+            <div class="noti-item">
+              <span class="version">${noti.version}</span>
+              <h4>${noti.titulo}</h4>
+              <p>${noti.texto}</p>
+              ${imgTag}
+            </div>
+          `;
+        });
+
+        // Revisar si hay notis nuevas para mostrar el punto rojo
+        if(notificacionesGlobales.length > 0 && notificacionesGlobales[0].timestamp > ultimaVista) {
+          badge.style.display = 'block';
+        } else {
+          badge.style.display = 'none';
+        }
+      } else {
+        contenedor.innerHTML = '<p style="color:white; text-align:center;">No hay mensajes nuevos.</p>';
+      }
+    });
+
+    function abrirBandeja() {
+      document.getElementById('modal-notis').classList.add('activo');
+      document.getElementById('badge-campana').style.display = 'none';
+      if(notificacionesGlobales.length > 0) {
+        ultimaVista = notificacionesGlobales[0].timestamp;
+        localStorage.setItem('ultimaNotiId', ultimaVista);
+      }
+    }
+
+    // Funciones del Admin Panel
+    function abrirAdmin() {
+      document.getElementById('modal-admin').classList.add('activo');
+    }
+
+    function publicarNotificacion() {
+      const titulo = document.getElementById('noti-titulo').value.trim();
+      const version = document.getElementById('noti-version').value.trim();
+      const texto = document.getElementById('noti-texto').value.trim();
+      const imagen = document.getElementById('noti-img').value.trim();
+
+      if(!titulo || !texto) {
+        alert("El título y el texto son obligatorios."); return;
+      }
+
+      const nuevaNoti = {
+        titulo: titulo,
+        version: version || "Aviso",
+        texto: texto,
+        imagen: imagen,
+        timestamp: Date.now()
+      };
+
+      database.ref('notificaciones_globales').push(nuevaNoti)
+        .then(() => {
+          alert("¡Notificación enviada a Greta!");
+          document.getElementById('modal-admin').classList.remove('activo');
+          // Limpiar celdas
+          document.getElementById('noti-titulo').value = '';
+          document.getElementById('noti-version').value = '';
+          document.getElementById('noti-texto').value = '';
+          document.getElementById('noti-img').value = '';
+        })
+        .catch(err => alert("Error: " + err.message));
+    }
+  </script>
 </body>
 </html>
