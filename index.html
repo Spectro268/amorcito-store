@@ -5,12 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Amorcito Store</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Dancing+Script:wght@700&display=swap');
+
+    /* Carga de Fuentes Locales */
+    @font-face {
+      font-family: 'Ananias';
+      src: url('Ananias.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
     
+    @font-face {
+      font-family: 'Shlop';
+      src: url('shlop.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
     :root {
       --pink-bg: #ffe6ef;
       --pink-header: #df588b;
       --pink-soft: #f48fb1;
+      --pink-gradient-light: #ffebf3;
       --dark-bg: #1a0b2e;
       --text-dark: #333;
     }
@@ -22,102 +38,185 @@
       overflow-x: hidden;
     }
     
-    /* Barra Superior y Header */
+    /* -------------------------------------------
+       BARRA SUPERIOR FIJA Y DEGRADADO
+       ------------------------------------------- */
     .top-bar {
-      background: white;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: linear-gradient(to bottom, var(--pink-gradient-light) 0%, white 100%);
       text-align: center;
-      padding: 12px;
+      padding: 12px 20px;
       color: var(--pink-header);
-      font-weight: 600;
-      letter-spacing: 1px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(223, 88, 139, 0.15);
     }
-    
+
+    .top-bar-title {
+      font-family: 'Ananias', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      margin: 0;
+    }
+
+    /* Ícono de Notificación Fijo a la Izquierda */
+    .notification-btn {
+      position: absolute;
+      left: 20px;
+      background: white;
+      color: var(--pink-header);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(223, 88, 139, 0.2);
+      transition: transform 0.2s;
+    }
+    .notification-btn:hover { transform: scale(1.1); }
+
+    /* -------------------------------------------
+       ENCABEZADO CON CÍRCULOS ANIMADOS
+       ------------------------------------------- */
     .hero-banner {
+      position: relative;
       background: linear-gradient(135deg, var(--pink-soft), var(--pink-header));
       color: white;
       text-align: center;
-      padding: 50px 20px;
+      padding: 60px 20px;
+      overflow: hidden;
     }
     
     .hero-banner h1 {
-      font-size: 2.5rem;
+      font-size: clamp(2rem, 5vw, 3rem);
       margin: 0 0 10px;
-      font-weight: 700;
+      font-weight: 800;
+      position: relative;
+      z-index: 2;
     }
     
     .hero-banner p {
-      font-size: 1rem;
+      font-size: 1.1rem;
       margin: 0;
-      opacity: 0.9;
+      opacity: 0.95;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Círculos Animados de Fondo */
+    .circle-deco {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      animation: rotateSlow 20s linear infinite;
     }
     
-    /* Sección de Juegos */
+    .circle-1 {
+      width: 300px;
+      height: 300px;
+      top: -100px;
+      right: -50px;
+    }
+    
+    .circle-2 {
+      width: 200px;
+      height: 200px;
+      bottom: -80px;
+      left: -40px;
+      animation-direction: reverse;
+    }
+
+    @keyframes rotateSlow {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.05); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+    
+    /* -------------------------------------------
+       SECCIÓN DE JUEGOS Y CATÁLOGO
+       ------------------------------------------- */
     .games-section {
       text-align: center;
-      padding: 40px 20px;
+      padding: 50px 20px;
+      position: relative;
     }
     
     .cursive-title {
       font-family: 'Dancing Script', cursive;
       font-size: 3.5rem;
       color: var(--pink-header);
-      margin-bottom: 20px;
+      margin-bottom: 25px;
     }
     
     .btn-catalog {
       background: white;
       color: var(--pink-header);
-      border: 1px solid var(--pink-soft);
-      padding: 12px 30px;
+      border: none;
+      padding: 12px 35px;
       border-radius: 25px;
       font-weight: 600;
-      font-size: 1rem;
+      font-size: 1.1rem;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(223, 88, 139, 0.2);
-      margin-bottom: 40px;
+      box-shadow: 0 6px 15px rgba(223, 88, 139, 0.15);
+      margin-bottom: 50px;
+      transition: transform 0.2s;
     }
+    .btn-catalog:hover { transform: translateY(-3px); }
     
-    /* Tarjetas */
+    /* Tarjetas del Catálogo Original */
     .cards-grid {
       display: flex;
       justify-content: center;
-      gap: 25px;
+      gap: 30px;
       flex-wrap: wrap;
     }
     
     .card {
       background: white;
-      border-radius: 16px;
+      border-radius: 20px;
       padding: 15px;
-      width: 260px;
+      width: 280px;
       text-align: left;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+      box-shadow: 0 10px 25px rgba(223, 88, 139, 0.1);
+      transition: transform 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
     }
     
     .card-img {
       width: 100%;
-      height: 130px;
+      height: 140px;
       background: #f0f0f0;
       border-radius: 12px;
-      margin-bottom: 12px;
+      margin-bottom: 15px;
       object-fit: cover;
     }
     
     .card h3 {
-      margin: 0 0 8px;
+      margin: 0 0 10px;
       color: var(--pink-header);
-      font-size: 1.3rem;
+      font-size: 1.4rem;
+      font-weight: 800;
     }
     
     .badge {
       background: var(--pink-bg);
       color: var(--pink-header);
-      font-size: 0.75rem;
-      padding: 4px 10px;
-      border-radius: 12px;
+      font-size: 0.8rem;
+      padding: 5px 12px;
+      border-radius: 15px;
       display: inline-block;
-      margin-bottom: 15px;
-      font-weight: 600;
+      margin-bottom: 20px;
+      font-weight: 700;
     }
     
     .btn-play {
@@ -125,66 +224,128 @@
       text-align: center;
       background: white;
       color: var(--pink-header);
-      border: 1px solid var(--pink-bg);
-      padding: 10px;
-      border-radius: 20px;
-      font-weight: 600;
+      border: 2px solid var(--pink-bg);
+      padding: 12px;
+      border-radius: 25px;
+      font-weight: 700;
+      font-size: 1.1rem;
       text-decoration: none;
-      box-shadow: 0 2px 8px rgba(223, 88, 139, 0.2);
+      box-shadow: 0 4px 10px rgba(223, 88, 139, 0.1);
+      transition: all 0.2s;
     }
     
-    /* Transición de Ondas hacia la Mansión */
+    .btn-play:hover {
+      background: var(--pink-header);
+      color: white;
+      border-color: var(--pink-header);
+    }
+    
+    /* -------------------------------------------
+       TRANSICIÓN Y MANSIÓN OSCURA
+       ------------------------------------------- */
+    /* SVG Ondas de Transición */
     .waves {
       display: block;
       width: 100%;
       height: auto;
-      margin-bottom: -5px; /* Elimina espacio en blanco inferior */
+      margin-bottom: -10px; /* Elimina cortes */
+    }
+
+    /* Degradado Translúcido de Conexión */
+    .transition-blend {
+      height: 100px;
+      background: linear-gradient(to bottom, #2a1145 0%, rgba(26, 11, 46, 0.8) 100%);
+      margin-bottom: -100px; /* Superpone la imagen de la mansión */
+      position: relative;
+      z-index: 1;
     }
     
     .mansion-section {
-      background: var(--dark-bg);
-      background-image: radial-gradient(circle at center, #512b81 0%, var(--dark-bg) 70%);
+      background-color: var(--dark-bg);
+      background-image: url('casaembrujada.png');
+      background-size: cover;
+      background-position: center bottom;
+      background-repeat: no-repeat;
       color: white;
       text-align: center;
-      padding: 80px 20px;
-      min-height: 400px;
+      padding: 150px 20px 100px;
+      position: relative;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    /* Capa oscura para que el texto resalte sobre la imagen */
+    .mansion-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(26, 11, 46, 0.7) 0%, rgba(0,0,0,0.3) 100%);
+      z-index: 1;
     }
     
+    .mansion-content {
+      position: relative;
+      z-index: 2;
+      animation: gentleBreath 4s ease-in-out infinite;
+    }
+
+    @keyframes gentleBreath {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
     .mansion-section h2 {
-      font-family: 'Creepster', system-ui; /* Requiere importar fuente spooky si deseas */
-      font-size: 4rem;
+      font-family: 'Shlop', system-ui;
+      font-size: clamp(3.5rem, 8vw, 5rem);
       margin-bottom: 30px;
+      line-height: 1.1;
       text-transform: uppercase;
       letter-spacing: 2px;
-      text-shadow: 3px 3px 10px rgba(0,0,0,0.8);
+      color: #fff;
+      text-shadow: 4px 4px 15px rgba(0,0,0,0.9), 0 0 30px rgba(142, 68, 173, 0.6);
     }
     
     .btn-enter {
-      background: #8e44ad;
-      color: black;
-      border: 3px solid black;
-      padding: 15px 50px;
+      background: linear-gradient(to bottom, #9b59b6, #8e44ad);
+      color: #fff;
+      border: 3px solid #30103b;
+      padding: 15px 60px;
       font-size: 1.5rem;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
-      border-radius: 8px;
+      border-radius: 12px;
       text-transform: uppercase;
-      box-shadow: 4px 4px 0px black;
+      box-shadow: 0 8px 25px rgba(142, 68, 173, 0.5), inset 0 2px 5px rgba(255,255,255,0.3);
+      transition: all 0.3s;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .btn-enter:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 30px rgba(142, 68, 173, 0.7), inset 0 2px 5px rgba(255,255,255,0.4);
     }
   </style>
 </head>
 <body>
 
-  <!-- Barra Superior -->
-  <div class="top-bar">INICIO</div>
+  <!-- Barra Superior Anclada con Notificación -->
+  <div class="top-bar">
+    <button class="notification-btn" aria-label="Notificaciones">🔔</button>
+    <h2 class="top-bar-title">INICIO</h2>
+  </div>
   
-  <!-- Encabezado -->
+  <!-- Encabezado con Círculos Decorativos -->
   <header class="hero-banner">
-    <h1>Un lugarcito hecho con mucho amor ♥</h1>
+    <div class="circle-deco circle-1"></div>
+    <div class="circle-deco circle-2"></div>
+    
+    <h1>AMORCITO STORE</h1>
     <p>Historias, preguntas y sorpresas para compartir juntos.</p>
   </header>
   
-  <!-- Catálogo de Juegos -->
+  <!-- Catálogo de Juegos Original -->
   <section class="games-section">
     <div class="cursive-title">Pequeños juegos hechos para nosotros ♥</div>
     <button class="btn-catalog">Catálogo de juegos</button>
@@ -192,7 +353,7 @@
     <div class="cards-grid">
       <!-- Tarjeta 1 -->
       <div class="card">
-        <div class="card-img" style="background-image: url('imagen-san-valentin.jpg'); background-size: cover;"></div>
+        <div class="card-img" style="background-image: url('imagen-san-valentin.jpg'); background-size: cover; background-position: center;"></div>
         <h3>San Valentín</h3>
         <div class="badge">♥ Primero en esta página</div>
         <a href="#" class="btn-play">Jugar</a>
@@ -200,7 +361,7 @@
       
       <!-- Tarjeta 2 -->
       <div class="card">
-        <div class="card-img" style="background-image: url('imagen-primavera.jpg'); background-size: cover;"></div>
+        <div class="card-img" style="background-image: url('imagen-primavera.jpg'); background-size: cover; background-position: center;"></div>
         <h3>Primavera del amor</h3>
         <div class="badge">♥ Más reciente</div>
         <a href="#" class="btn-play">Jugar</a>
@@ -209,16 +370,21 @@
   </section>
 
   <!-- Transición de Ondas SVG -->
-  <svg class="waves" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+  <svg class="waves" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
     <path fill="#d84572" fill-opacity="1" d="M0,128L48,138.7C96,149,192,171,288,160C384,149,480,107,576,112C672,117,768,171,864,181.3C960,192,1056,160,1152,138.7C1248,117,1344,107,1392,101.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
     <path fill="#7a285c" fill-opacity="1" d="M0,224L48,229.3C96,235,192,245,288,234.7C384,224,480,192,576,176C672,160,768,160,864,170.7C960,181,1056,203,1152,202.7C1248,203,1344,181,1392,170.7L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
     <path fill="#2a1145" fill-opacity="1" d="M0,288L48,272C96,256,192,224,288,218.7C384,213,480,235,576,245.3C672,256,768,256,864,245.3C960,235,1056,213,1152,208C1248,203,1344,213,1392,218.7L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
   </svg>
+  
+  <div class="transition-blend"></div>
 
-  <!-- Sección Mansión Oscura -->
+  <!-- Sección Mansión Oscura (con fondo de imagen) -->
   <section class="mansion-section">
-    <h2>ENTRAR EN LA<br>MANSIÓN</h2>
-    <button class="btn-enter">Entrar</button>
+    <div class="mansion-overlay"></div>
+    <div class="mansion-content">
+      <h2>ENTRAR EN LA<br>MANSIÓN</h2>
+      <button class="btn-enter">Entrar</button>
+    </div>
   </section>
 
 </body>
