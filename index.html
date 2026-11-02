@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Amorcito Store</title>
   
-  <!-- FAVICON -->
   <link rel="icon" type="image/png" href="favicon.png">
 
   <!-- FIREBASE SDK -->
@@ -36,250 +35,178 @@
       --pink-gradient-light: #ffebf3;
       --dark-bg: #1a0b2e;
       --text-dark: #333;
+      --shadow-pink: rgba(223, 88, 139, 0.4);
+      --yellow-alert: #ffeb3b;
     }
     
-    /* RESET & ANTI-SCROLLBAR */
     html, body {
-      margin: 0; padding: 0; width: 100%;
+      margin: 0; padding: 0; width: 100%; min-height: 100vh;
       font-family: 'Poppins', sans-serif;
       background-color: var(--pink-bg);
       overflow-x: hidden;
-      -ms-overflow-style: none;  /* IE and Edge */
-      scrollbar-width: none;  /* Firefox */
+      -ms-overflow-style: none;  
+      scrollbar-width: none;  
     }
-    html::-webkit-scrollbar, body::-webkit-scrollbar {
-      display: none;
-    }
-    
+    html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
     a, button { -webkit-tap-highlight-color: transparent; }
 
     /* -------------------------------------------
-       BARRA SUPERIOR (NAVBAR)
+       BARRA SUPERIOR MINIMALISTA
        ------------------------------------------- */
     .top-bar {
-      position: sticky;
-      top: 0; z-index: 1000;
+      position: sticky; top: 0; z-index: 1000;
       background: linear-gradient(to bottom, var(--pink-gradient-light) 0%, white 100%);
-      padding: 12px 15px;
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      box-shadow: 0 4px 15px rgba(223, 88, 139, 0.15);
+      padding: 12px 20px; display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center; gap: 15px;
+      box-shadow: 0 4px 15px rgba(223, 88, 139, 0.1);
     }
 
-    .top-left-icons {
-      display: flex; gap: 10px; justify-self: start;
-    }
+    .top-left-icons { display: flex; gap: 12px; }
 
     .nav-btn-circle {
-      background: white; color: var(--pink-header);
-      border: none; width: 40px; height: 40px;
-      border-radius: 50%; display: flex;
-      justify-content: center; align-items: center;
-      cursor: pointer; box-shadow: 0 4px 10px rgba(223, 88, 139, 0.2);
-      transition: transform 0.2s, background 0.2s;
-      position: relative;
+      background: white; color: var(--pink-header); border: none;
+      width: 45px; height: 45px; border-radius: 50%; display: flex;
+      justify-content: center; align-items: center; cursor: pointer;
+      box-shadow: 0 5px 15px var(--shadow-pink);
+      transition: transform 0.2s, box-shadow 0.2s; position: relative;
     }
     .nav-btn-circle svg { width: 22px; height: 22px; fill: var(--pink-header); }
-    .nav-btn-circle:hover { transform: scale(1.05); background: var(--pink-bg); }
+    .nav-btn-circle:hover { transform: translateY(-2px); box-shadow: 0 8px 20px var(--shadow-pink); }
 
-    /* Punto rojo de nueva notificación */
+    /* Punto Amarillo de Notificación */
     .noti-badge {
-      display: none; position: absolute; top: 0; right: 0;
-      width: 12px; height: 12px; background: red;
+      display: none; position: absolute; top: 0px; right: 0px;
+      width: 14px; height: 14px; background: var(--yellow-alert);
       border-radius: 50%; border: 2px solid white;
+      box-shadow: 0 0 10px rgba(255, 235, 59, 0.8);
+      animation: pulseAlert 2s infinite;
+    }
+    @keyframes pulseAlert {
+      0% { box-shadow: 0 0 0 0 rgba(255, 235, 59, 0.7); }
+      70% { box-shadow: 0 0 0 6px rgba(255, 235, 59, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 235, 59, 0); }
     }
 
-    .top-bar-title {
-      font-family: 'Ananias', sans-serif; font-size: 1.2rem;
-      letter-spacing: 2px; margin: 0; color: var(--pink-header);
-      justify-self: center; text-align: center;
-    }
-
-    .top-right-actions {
-      display: flex; gap: 10px; justify-self: end; align-items: center;
-    }
-
-    .btn-pill {
-      background: white; color: var(--pink-header);
-      border: none; padding: 8px 15px; border-radius: 20px;
-      font-weight: 700; font-size: 0.85rem; cursor: pointer;
-      box-shadow: 0 4px 10px rgba(223, 88, 139, 0.2);
+    /* Ícono Casita Central */
+    .top-center-home {
+      justify-self: center; cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
       transition: transform 0.2s;
     }
-    .btn-pill:hover { transform: scale(1.05); background: var(--pink-bg); }
+    .top-center-home svg { width: 35px; height: 35px; fill: var(--pink-header); }
+    .top-center-home:hover { transform: scale(1.1); }
 
-    /* Botón Admin Oculto */
-    #btn-admin-panel { display: none; background: #333; color: #fff; }
+    .btn-pill {
+      background: white; color: var(--pink-header); border: none;
+      padding: 10px 20px; border-radius: 25px; font-weight: 700;
+      font-size: 0.95rem; cursor: pointer;
+      box-shadow: 0 5px 15px var(--shadow-pink); transition: transform 0.2s;
+    }
+    .btn-pill:hover { transform: translateY(-2px); }
+    #btn-admin-panel { display: none; background: #333; color: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
 
     /* -------------------------------------------
        HEADER: BURBUJAS FLOTANTES
        ------------------------------------------- */
     .hero-banner {
-      position: relative;
-      background: linear-gradient(135deg, var(--pink-soft), var(--pink-header));
-      color: white; text-align: center;
-      padding: 50px 15px; overflow: hidden;
+      position: relative; background: linear-gradient(135deg, var(--pink-soft), var(--pink-header));
+      color: white; text-align: center; padding: 50px 15px; overflow: hidden;
     }
-    
-    .hero-banner h1 {
-      font-size: clamp(2rem, 6vw, 3rem);
-      margin: 0 0 10px; font-weight: 800;
-      position: relative; z-index: 2;
-    }
-    
-    .hero-banner p {
-      font-size: 1rem; margin: 0; opacity: 0.95;
-      position: relative; z-index: 2;
-    }
-
-    .circle-deco {
-      position: absolute; border-radius: 50%;
-      background: rgba(255, 255, 255, 0.15);
-      animation: floatSmooth 12s ease-in-out infinite alternate;
-    }
+    .hero-banner h1 { font-size: clamp(2rem, 6vw, 3rem); margin: 0 0 10px; font-weight: 800; position: relative; z-index: 2; }
+    .hero-banner p { font-size: 1rem; margin: 0; opacity: 0.95; position: relative; z-index: 2; }
+    .circle-deco { position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.15); animation: floatSmooth 12s ease-in-out infinite alternate; }
     .circle-1 { width: 300px; height: 300px; top: -50px; left: -100px; }
     .circle-2 { width: 250px; height: 250px; bottom: -80px; right: -50px; animation-duration: 15s; animation-delay: -5s; }
-
-    @keyframes floatSmooth {
-      0% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(30px, -20px) scale(1.05); }
-      100% { transform: translate(-20px, 30px) scale(0.95); }
-    }
+    @keyframes floatSmooth { 0% { transform: translate(0, 0) scale(1); } 50% { transform: translate(30px, -20px) scale(1.05); } 100% { transform: translate(-20px, 30px) scale(0.95); } }
     
     /* -------------------------------------------
-       SECCIONES DE VISTA (SPA)
+       SECCIONES SPA (Con Fade + Min Height)
        ------------------------------------------- */
-    .view-section { display: none; animation: fadeIn 0.3s ease; }
+    .view-section {
+      display: none; min-height: 100vh;
+      animation: slideFadeIn 0.4s ease forwards;
+    }
     .view-section.activa { display: block; }
-    @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
+    @keyframes slideFadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-    .main-container { padding: 40px 15px 0px; text-align: center; min-height: 50vh; }
-    .cursive-title { font-family: 'Dancing Script', cursive; font-size: clamp(2.5rem, 8vw, 3.5rem); color: var(--pink-header); margin-bottom: 25px; }
+    .main-container { padding: 40px 15px 60px; text-align: center; }
+    .cursive-title { font-family: 'Dancing Script', cursive; font-size: clamp(2.5rem, 8vw, 3.5rem); color: var(--pink-header); margin-bottom: 35px; }
 
-    /* -------------------------------------------
-       HUB PRINCIPAL: DOS UNIVERSOS
-       ------------------------------------------- */
-    .hub-grid {
-      display: flex; justify-content: center; gap: 20px;
-      flex-wrap: wrap; margin-bottom: 40px;
-    }
-
-    .hub-card {
-      background: white; border-radius: 20px; padding: 15px; width: 300px;
-      text-align: center; box-shadow: 0 10px 25px rgba(223, 88, 139, 0.15);
-      transition: transform 0.3s ease; cursor: pointer; border: 2px solid transparent;
-    }
+    /* HUB PRINCIPAL */
+    .hub-grid { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; margin-bottom: 40px; }
+    .hub-card { background: white; border-radius: 20px; padding: 15px; width: 320px; text-align: center; box-shadow: 0 10px 25px rgba(223, 88, 139, 0.15); transition: transform 0.3s ease; cursor: pointer; border: 2px solid transparent; }
     .hub-card:hover { transform: translateY(-5px); border-color: var(--pink-soft); }
-    
-    .hub-img {
-      width: 100%; height: 160px; border-radius: 12px; margin-bottom: 15px;
-      background-size: cover; background-position: center;
-    }
-    
-    .hub-card h3 { margin: 0 0 10px; font-size: 1.5rem; font-weight: 800; }
+    .hub-img { width: 100%; height: 180px; border-radius: 12px; margin-bottom: 15px; background-size: cover; background-position: center; }
+    .hub-card h3 { margin: 0 0 10px; font-size: 1.6rem; font-weight: 800; }
     .hub-card.canva h3 { color: var(--pink-header); }
-    .hub-card.boo h3 { font-family: 'Shlop', system-ui; font-size: 2.2rem; color: #512b81; letter-spacing: 2px;}
+    .hub-card.boo h3 { font-family: 'Shlop', system-ui; font-size: 2.4rem; color: #512b81; letter-spacing: 2px;}
 
-    /* -------------------------------------------
-       CATÁLOGO CANVA (SUBVISTA)
-       ------------------------------------------- */
-    .btn-volver {
-      background: transparent; color: var(--pink-header); border: 2px solid var(--pink-header);
-      padding: 8px 20px; border-radius: 20px; cursor: pointer; font-weight: 700;
-      margin-bottom: 30px; transition: 0.2s;
-    }
+    /* CATÁLOGO CANVA */
+    .btn-volver { background: transparent; color: var(--pink-header); border: 2px solid var(--pink-header); padding: 10px 25px; border-radius: 25px; cursor: pointer; font-weight: 700; margin-bottom: 40px; transition: 0.2s; }
     .btn-volver:hover { background: var(--pink-header); color: white; }
-
-    .cards-grid { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
-    .card {
-      background: white; border-radius: 20px; padding: 15px; width: 280px;
-      text-align: left; box-shadow: 0 10px 25px rgba(223, 88, 139, 0.1);
-    }
-    .card-img { width: 100%; height: 140px; border-radius: 12px; margin-bottom: 15px; background-size: cover; background-position: center; }
-    .card h3 { margin: 0 0 10px; color: var(--pink-header); font-size: 1.3rem; font-weight: 800; }
-    .badge { background: var(--pink-bg); color: var(--pink-header); font-size: 0.75rem; padding: 5px 12px; border-radius: 15px; display: inline-block; margin-bottom: 20px; font-weight: 700; }
-    .btn-play {
-      display: block; text-align: center; background: white; color: var(--pink-header);
-      border: 2px solid var(--pink-bg); padding: 10px; border-radius: 25px;
-      font-weight: 700; text-decoration: none; transition: all 0.2s; cursor: pointer;
-    }
+    .cards-grid { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; margin-bottom: 30px; }
+    .card { background: white; border-radius: 20px; padding: 15px; width: 300px; text-align: left; box-shadow: 0 10px 25px rgba(223, 88, 139, 0.1); transition: transform 0.2s; }
+    .card:hover { transform: translateY(-4px); }
+    .card-img { width: 100%; height: 150px; border-radius: 12px; margin-bottom: 15px; background-size: cover; background-position: center; }
+    .card h3 { margin: 0 0 10px; color: var(--pink-header); font-size: 1.4rem; font-weight: 800; }
+    .badge { background: var(--pink-bg); color: var(--pink-header); font-size: 0.8rem; padding: 5px 12px; border-radius: 15px; display: inline-block; margin-bottom: 20px; font-weight: 700; }
+    .btn-play { display: block; text-align: center; background: white; color: var(--pink-header); border: 2px solid var(--pink-bg); padding: 12px; border-radius: 25px; font-weight: 700; text-decoration: none; transition: all 0.2s; cursor: pointer; }
     .btn-play:hover { background: var(--pink-header); color: white; border-color: var(--pink-header); }
 
     /* -------------------------------------------
-       MODALES GLOBALES (Notis y Admin)
+       SECCIÓN BANDEJA DE ENTRADA (NOTIFICACIONES)
        ------------------------------------------- */
-    .modal-overlay {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-      z-index: 2000; justify-content: center; align-items: center;
-      backdrop-filter: blur(4px);
-    }
-    .modal-overlay.activo { display: flex; }
-    .modal-box {
-      background: var(--pink-bg); border-radius: 20px; padding: 25px; width: 90%; max-width: 500px;
-      max-height: 85vh; overflow-y: auto; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-    }
-    .btn-cerrar {
-      background: var(--pink-header); color: white; border: none; padding: 10px 20px;
-      border-radius: 15px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px;
-    }
-
-    /* Bandeja de Notificaciones (Estilo Rosa) */
-    .noti-header-modal {
-      text-align: center; color: white; font-size: 1.8rem; font-weight: 800;
-      text-shadow: 2px 2px 0px var(--pink-soft); margin: 0 0 15px 0;
-    }
-    .noti-divider {
-      text-align: center; color: white; font-size: 0.9rem; font-weight: bold;
-      margin-bottom: 20px; letter-spacing: 2px;
-    }
+    .noti-container { max-width: 700px; margin: 0 auto; text-align: left; }
+    .noti-header-modal { text-align: center; color: var(--pink-header); font-size: 2.2rem; font-weight: 800; margin: 0 0 15px 0; }
+    .noti-divider { text-align: center; color: var(--pink-soft); font-size: 1rem; font-weight: bold; margin-bottom: 30px; letter-spacing: 2px; }
     
-    .noti-item {
-      background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px;
-      text-align: left; box-shadow: 0 4px 10px rgba(223,88,139,0.1);
-    }
-    .noti-item h4 { margin: 0 0 10px 0; color: var(--pink-header); font-size: 1.2rem; }
-    .noti-item .version { font-size: 0.8rem; color: var(--pink-soft); float: right; font-weight: bold;}
-    .noti-item p { font-size: 0.95rem; color: #555; line-height: 1.5; margin: 10px 0; white-space: pre-wrap;}
-    .noti-img { width: 100%; border-radius: 8px; margin-top: 10px; display: none; }
+    .noti-item { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(223,88,139,0.1); transition: transform 0.2s; cursor: pointer; position: relative; }
+    .noti-item:hover { transform: scale(1.02); }
+    .noti-item h4 { margin: 0; color: var(--pink-header); font-size: 1.3rem; padding-right: 80px;}
+    .noti-item .version { font-size: 0.85rem; color: var(--pink-soft); position: absolute; top: 20px; right: 20px; font-weight: bold; }
+    .noti-content { display: none; margin-top: 15px; border-top: 2px dashed var(--pink-bg); padding-top: 15px; animation: slideFadeIn 0.3s ease; }
+    .noti-item.expandido .noti-content { display: block; }
+    .noti-content p { font-size: 1rem; color: #555; line-height: 1.6; margin: 0; white-space: pre-wrap; }
+    .noti-img { width: 100%; border-radius: 12px; margin-top: 15px; display: none; }
 
-    /* Formulario Admin */
-    .admin-form input, .admin-form textarea {
-      width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px;
-      border: 2px solid var(--pink-soft); font-family: inherit; box-sizing: border-box;
-    }
-    .admin-form button {
-      background: #333; color: white; padding: 12px; width: 100%; border: none;
-      border-radius: 8px; font-weight: bold; cursor: pointer;
-    }
+    /* Controles de Admin dentro de Notificación */
+    .admin-controls { display: none; margin-top: 15px; gap: 10px; justify-content: flex-end; }
+    .btn-admin-opt { background: #eee; border: none; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
+    .btn-admin-opt.edit { color: #007bff; }
+    .btn-admin-opt.delete { color: #dc3545; }
+    .btn-admin-opt.marknew { color: #ff9800; }
 
     /* -------------------------------------------
-       CIERRE: ONDAS SÓLIDAS
+       MODAL ADMIN (Para crear/editar)
        ------------------------------------------- */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(4px); animation: fadeIn 0.2s ease; }
+    .modal-overlay.activo { display: flex; }
+    .modal-box { background: var(--pink-bg); border-radius: 20px; padding: 25px; width: 90%; max-width: 500px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
+    .admin-form input, .admin-form textarea { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 2px solid var(--pink-soft); font-family: inherit; box-sizing: border-box; }
+    .admin-form button { background: #333; color: white; padding: 12px; width: 100%; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 10px;}
+
+    /* CIERRE DE ONDAS SÓLIDAS */
     .waves-container { width: 100%; line-height: 0; font-size: 0; margin-top: auto; }
     .waves { display: block; width: 100%; height: auto; }
 
-    @media(max-width: 600px) {
-      .top-bar { padding: 10px; }
-      .nav-btn-circle { width: 35px; height: 35px; }
-      .btn-pill { padding: 6px 12px; font-size: 0.8rem; }
-    }
+    @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
   </style>
 </head>
 <body>
 
-  <!-- Barra Superior -->
+  <!-- Barra Superior Minimalista -->
   <div class="top-bar">
     
     <div class="top-left-icons">
       <!-- Campana -->
-      <button class="nav-btn-circle" onclick="abrirBandeja()">
+      <button class="nav-btn-circle" onclick="cambiarVista('vista-notis')">
         <svg viewBox="0 0 24 24"><path d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.36 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.63 5.36 6 7.92 6 11V16L4 18V19H20V18L18 16Z"/></svg>
         <div class="noti-badge" id="badge-campana"></div>
       </button>
       
-      <!-- Tienda -->
-      <button class="nav-btn-circle" onclick="alert('Tienda en construcción (Fase 2)')">
+      <!-- Tienda/Carrito -->
+      <button class="nav-btn-circle" onclick="alert('Tienda/Carrito en construcción (Fase 2)')">
         <svg viewBox="0 0 24 24"><path d="M7 18C5.9 18 5.01 18.9 5.01 20C5.01 21.1 5.9 22 7 22C8.1 22 9 21.1 9 20C9 18.9 8.1 18 7 18ZM1 2V4H3L6.6 11.59L5.24 14.04C5.09 14.32 5 14.65 5 15C5 16.1 5.9 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.58 17.3 11.97L20.88 5.48C20.95 5.34 21 5.17 21 5C21 4.45 20.55 4 20 4H5.21L4.27 2H1ZM17 18C15.9 18 15.01 18.9 15.01 20C15.01 21.1 15.9 22 17 22C18.1 22 19 21.1 19 20C19 18.9 18.1 18 17 18Z"/></svg>
       </button>
       
@@ -289,16 +216,17 @@
       </button>
     </div>
 
-    <h2 class="top-bar-title">INICIO</h2>
-    
-    <div class="top-right-actions">
-      <button class="btn-pill" id="btn-admin-panel" onclick="abrirAdmin()">⚙️ Admin</button>
-      <button class="btn-pill" onclick="alert('Colección en construcción (Fase 2)')">Colección</button>
+    <!-- Casita Central -->
+    <div class="top-center-home" onclick="cambiarVista('vista-hub')">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
     </div>
     
+    <div style="display:flex; gap:10px; justify-self:end;">
+      <button class="btn-pill" id="btn-admin-panel" onclick="abrirAdminPanel()">⚙️ Admin</button>
+      <button class="btn-pill" onclick="alert('Colección en construcción (Fase 2)')">Colección</button>
+    </div>
   </div>
   
-  <!-- Encabezado -->
   <header class="hero-banner">
     <div class="circle-deco circle-1"></div>
     <div class="circle-deco circle-2"></div>
@@ -309,17 +237,13 @@
   <!-- VISTA 1: HUB PRINCIPAL -->
   <main id="vista-hub" class="view-section activa main-container">
     <div class="cursive-title">Elige tu destino ♥</div>
-    
     <div class="hub-grid">
-      <!-- Tarjeta Canva Store -->
       <div class="hub-card canva" onclick="cambiarVista('vista-canva')">
         <div class="hub-img" style="background-image: url('citasimagen.jpeg');"></div>
         <h3>Canva Store</h3>
         <p style="margin:0; font-size:0.9rem; opacity:0.8;">Juegos de preguntas y recuerdos hechos a mano.</p>
       </div>
-      
-      <!-- Tarjeta Boo Store (Link a tu evento) -->
-      <div class="hub-card boo" onclick="window.location.href='https://spectro268.github.io/susto-store/'">
+      <div class="hub-card boo" onclick="window.location.href='https://TU-USUARIO.github.io/boo-store/'">
         <div class="hub-img" style="background-image: url('amuletosimagen.jpeg');"></div>
         <h3>BOO! STORE</h3>
         <p style="margin:0; font-size:0.9rem; opacity:0.8;">La mansión del terror. Entra bajo tu propio riesgo.</p>
@@ -331,7 +255,6 @@
   <section id="vista-canva" class="view-section main-container">
     <button class="btn-volver" onclick="cambiarVista('vista-hub')">⬅ Volver al Inicio</button>
     <div class="cursive-title">Pequeños juegos hechos para nosotros</div>
-    
     <div class="cards-grid">
       <div class="card">
         <div class="card-img" style="background-image: url('imagen-san-valentin.jpg');"></div>
@@ -339,7 +262,6 @@
         <div class="badge">♥ Primero en esta página</div>
         <button class="btn-play">Jugar</button>
       </div>
-      
       <div class="card">
         <div class="card-img" style="background-image: url('imagen-primavera.jpg');"></div>
         <h3>Primavera del amor</h3>
@@ -349,7 +271,20 @@
     </div>
   </section>
 
-  <!-- CIERRE DE ONDAS SÓLIDAS -->
+  <!-- VISTA 3: BANDEJA DE ENTRADA (SECCIÓN COMPLETA) -->
+  <section id="vista-notis" class="view-section main-container">
+    <button class="btn-volver" onclick="cambiarVista('vista-hub')">⬅ Volver al Inicio</button>
+    <div class="noti-container">
+      <h3 class="noti-header-modal">BANDEJA DE ENTRADA</h3>
+      <div class="noti-divider">MÁS RECIENTE</div>
+      
+      <div id="lista-notis">
+        <p style="color:var(--pink-header); text-align:center;">Buscando magia...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ONDAS SÓLIDAS -->
   <div class="waves-container">
     <svg class="waves" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
       <path fill="#d84572" fill-opacity="1" d="M0,128L48,138.7C96,149,192,171,288,160C384,149,480,107,576,112C672,117,768,171,864,181.3C960,192,1056,160,1152,138.7C1248,117,1344,107,1392,101.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
@@ -358,31 +293,17 @@
     </svg>
   </div>
 
-  <!-- MODAL: BANDEJA DE ENTRADA (GRETA) -->
-  <div class="modal-overlay" id="modal-notis">
-    <div class="modal-box" style="background: var(--pink-soft);">
-      <h3 class="noti-header-modal">BANDEJA DE ENTRADA</h3>
-      <div class="noti-divider">MÁS RECIENTE</div>
-      
-      <div id="lista-notis">
-        <!-- Las notificaciones cargan aquí desde Firebase -->
-        <p style="color:white; text-align:center;">Buscando magia...</p>
-      </div>
-
-      <button class="btn-cerrar" onclick="document.getElementById('modal-notis').classList.remove('activo')">Cerrar</button>
-    </div>
-  </div>
-
-  <!-- MODAL: PANEL ADMIN (OCULTO) -->
+  <!-- MODAL ADMIN -->
   <div class="modal-overlay" id="modal-admin">
     <div class="modal-box admin-form">
-      <h3 style="margin-top:0; color:var(--pink-header); text-align:center;">Crear Notificación</h3>
+      <h3 style="margin-top:0; color:var(--pink-header); text-align:center;" id="admin-modal-title">Crear Notificación</h3>
+      <input type="hidden" id="noti-id">
       <input type="text" id="noti-titulo" placeholder="Título (ej: ¡Nuevo Diseño!)">
       <input type="text" id="noti-version" placeholder="Versión (ej: Actualización 2.0.0)">
       <textarea id="noti-texto" rows="4" placeholder="Escribe el mensaje detallado aquí..."></textarea>
       <input type="text" id="noti-img" placeholder="Nombre de imagen en GitHub (Opcional, ej: update.png)">
-      <button onclick="publicarNotificacion()">🚀 Publicar en Bandeja</button>
-      <button class="btn-cerrar" style="background: #999;" onclick="document.getElementById('modal-admin').classList.remove('activo')">Cancelar</button>
+      <button onclick="guardarNotificacion()" id="btn-save-noti">🚀 Publicar</button>
+      <button style="background: #999;" onclick="cerrarAdminPanel()">Cancelar</button>
     </div>
   </div>
 
@@ -403,108 +324,160 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
     
-    // Variables de control
     let notificacionesGlobales = [];
     let ultimaVista = localStorage.getItem('ultimaNotiId') || 0;
 
     // ==========================================
-    // 2. MODO ADMINISTRADOR (ENLACE SECRETO)
+    // 2. MODO ADMIN
     // ==========================================
     const urlParams = new URLSearchParams(window.location.search);
-    if(urlParams.get('modo') === 'admin') {
-      document.getElementById('btn-admin-panel').style.display = 'block';
-    }
+    const esAdmin = urlParams.get('modo') === 'admin';
+    if(esAdmin) document.getElementById('btn-admin-panel').style.display = 'block';
 
     // ==========================================
-    // 3. LOGICA DE NAVEGACIÓN (SPA)
+    // 3. LOGICA SPA (Animación fluida)
     // ==========================================
     function cambiarVista(idVista) {
       document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('activa'));
       document.getElementById(idVista).classList.add('activa');
       window.scrollTo(0,0);
+
+      // Si entra a notificaciones, ocultar punto amarillo y actualizar lectura
+      if(idVista === 'vista-notis') {
+        document.getElementById('badge-campana').style.display = 'none';
+        if(notificacionesGlobales.length > 0) {
+          ultimaVista = notificacionesGlobales[0].timestamp;
+          localStorage.setItem('ultimaNotiId', ultimaVista);
+        }
+      }
     }
 
     // ==========================================
-    // 4. LÓGICA DE NOTIFICACIONES (FIREBASE)
+    // 4. NOTIFICACIONES (ACORDEÓN Y ADMIN)
     // ==========================================
-    
-    // Leer datos en tiempo real
     database.ref('notificaciones_globales').on('value', (snapshot) => {
       const data = snapshot.val();
       const contenedor = document.getElementById('lista-notis');
       const badge = document.getElementById('badge-campana');
       
       if(data) {
-        // Convertir objeto de firebase a array y ordenar de más nuevo a más viejo
-        notificacionesGlobales = Object.values(data).sort((a, b) => b.timestamp - a.timestamp);
+        // Mapear con IDs para poder editar/borrar
+        notificacionesGlobales = Object.keys(data).map(key => ({
+          id: key, ...data[key]
+        })).sort((a, b) => b.timestamp - a.timestamp);
         
         contenedor.innerHTML = '';
         notificacionesGlobales.forEach(noti => {
-          let imgTag = noti.imagen ? `<img src="${noti.imagen}" class="noti-img" style="display:block;">` : '';
+          let imgTag = noti.imagen ? `<img src="${noti.imagen}" class="noti-img" onload="this.style.display='block'">` : '';
+          
+          // Controles solo para Admin
+          let adminHtml = esAdmin ? `
+            <div class="admin-controls" style="display:flex;">
+              <button class="btn-admin-opt marknew" onclick="marcarNueva('${noti.id}', event)">🟡 Nueva</button>
+              <button class="btn-admin-opt edit" onclick="editarNoti('${noti.id}', event)">✏️ Editar</button>
+              <button class="btn-admin-opt delete" onclick="borrarNoti('${noti.id}', event)">🗑️ Borrar</button>
+            </div>
+          ` : '';
+
           contenedor.innerHTML += `
-            <div class="noti-item">
+            <div class="noti-item" onclick="this.classList.toggle('expandido')">
               <span class="version">${noti.version}</span>
               <h4>${noti.titulo}</h4>
-              <p>${noti.texto}</p>
-              ${imgTag}
+              <div class="noti-content">
+                <p>${noti.texto}</p>
+                ${imgTag}
+                ${adminHtml}
+              </div>
             </div>
           `;
         });
 
-        // Revisar si hay notis nuevas para mostrar el punto rojo
-        if(notificacionesGlobales.length > 0 && notificacionesGlobales[0].timestamp > ultimaVista) {
+        // Lógica de alerta amarilla
+        let hayNuevas = notificacionesGlobales.some(n => n.timestamp > ultimaVista || n.forzarNueva);
+        if(hayNuevas && !document.getElementById('vista-notis').classList.contains('activa')) {
           badge.style.display = 'block';
         } else {
           badge.style.display = 'none';
         }
       } else {
-        contenedor.innerHTML = '<p style="color:white; text-align:center;">No hay mensajes nuevos.</p>';
+        notificacionesGlobales = [];
+        contenedor.innerHTML = '<p style="color:var(--pink-header); text-align:center;">No hay mensajes nuevos.</p>';
       }
     });
 
-    function abrirBandeja() {
-      document.getElementById('modal-notis').classList.add('activo');
-      document.getElementById('badge-campana').style.display = 'none';
-      if(notificacionesGlobales.length > 0) {
-        ultimaVista = notificacionesGlobales[0].timestamp;
-        localStorage.setItem('ultimaNotiId', ultimaVista);
-      }
-    }
-
-    // Funciones del Admin Panel
-    function abrirAdmin() {
+    // ==========================================
+    // 5. FUNCIONES CRUD ADMIN
+    // ==========================================
+    function abrirAdminPanel() {
+      document.getElementById('admin-modal-title').textContent = "Crear Notificación";
+      document.getElementById('noti-id').value = '';
+      document.getElementById('noti-titulo').value = '';
+      document.getElementById('noti-version').value = '';
+      document.getElementById('noti-texto').value = '';
+      document.getElementById('noti-img').value = '';
       document.getElementById('modal-admin').classList.add('activo');
     }
 
-    function publicarNotificacion() {
+    function cerrarAdminPanel() {
+      document.getElementById('modal-admin').classList.remove('activo');
+    }
+
+    function guardarNotificacion() {
+      const id = document.getElementById('noti-id').value;
       const titulo = document.getElementById('noti-titulo').value.trim();
       const version = document.getElementById('noti-version').value.trim();
       const texto = document.getElementById('noti-texto').value.trim();
       const imagen = document.getElementById('noti-img').value.trim();
 
-      if(!titulo || !texto) {
-        alert("El título y el texto son obligatorios."); return;
-      }
+      if(!titulo || !texto) { alert("Título y texto obligatorios."); return; }
 
-      const nuevaNoti = {
-        titulo: titulo,
-        version: version || "Aviso",
-        texto: texto,
-        imagen: imagen,
-        timestamp: Date.now()
+      const notiData = {
+        titulo: titulo, version: version || "Aviso",
+        texto: texto, imagen: imagen,
+        timestamp: Date.now(),
+        forzarNueva: false 
       };
 
-      database.ref('notificaciones_globales').push(nuevaNoti)
-        .then(() => {
-          alert("¡Notificación enviada a Greta!");
-          document.getElementById('modal-admin').classList.remove('activo');
-          // Limpiar celdas
-          document.getElementById('noti-titulo').value = '';
-          document.getElementById('noti-version').value = '';
-          document.getElementById('noti-texto').value = '';
-          document.getElementById('noti-img').value = '';
-        })
-        .catch(err => alert("Error: " + err.message));
+      if(id) {
+        // Actualizar existente
+        database.ref('notificaciones_globales/' + id).update({
+          titulo: titulo, version: version || "Aviso",
+          texto: texto, imagen: imagen
+        }).then(() => cerrarAdminPanel());
+      } else {
+        // Crear nueva
+        database.ref('notificaciones_globales').push(notiData).then(() => cerrarAdminPanel());
+      }
+    }
+
+    function editarNoti(id, event) {
+      event.stopPropagation();
+      const noti = notificacionesGlobales.find(n => n.id === id);
+      if(noti) {
+        document.getElementById('admin-modal-title').textContent = "Editar Notificación";
+        document.getElementById('noti-id').value = noti.id;
+        document.getElementById('noti-titulo').value = noti.titulo;
+        document.getElementById('noti-version').value = noti.version;
+        document.getElementById('noti-texto').value = noti.texto;
+        document.getElementById('noti-img').value = noti.imagen || '';
+        document.getElementById('modal-admin').classList.add('activo');
+      }
+    }
+
+    function borrarNoti(id, event) {
+      event.stopPropagation();
+      if(confirm("¿Seguro que quieres borrar esta notificación para siempre?")) {
+        database.ref('notificaciones_globales/' + id).remove();
+      }
+    }
+
+    function marcarNueva(id, event) {
+      event.stopPropagation();
+      // Genera un nuevo timestamp para engañar a la app de Greta
+      database.ref('notificaciones_globales/' + id).update({ 
+        timestamp: Date.now() 
+      });
+      alert("Marcada como nueva. El punto amarillo volverá a encenderse.");
     }
   </script>
 </body>
