@@ -165,7 +165,7 @@
     @keyframes aparece { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
     @keyframes bajar { from { transform: translateY(-100%); } to { transform: none; } }
     /* Cartas entran escalonadas (solo al abrir la sección) */
-    .view-section.activa :is(.hub-card, .card, .item, .skeleton, .snack-box) {
+    .view-section.activa :is(.hub-card, .card, .item, .skeleton, .snack-box, .banner) {
       animation: aparece .5s cubic-bezier(.22,1,.36,1) backwards;
       animation-delay: calc(var(--i, 0) * 55ms + 80ms);
     }
@@ -270,6 +270,95 @@
     .waves { display: block; width: 100%; height: clamp(70px, 11vw, 140px); }
 
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
+
+    /* ===== v3: barra, sidebar, banners, tickets, panel ===== */
+    #views { flex: 1 0 auto; display: flex; flex-direction: column; transition: height .45s cubic-bezier(.22,1,.36,1); }
+    .top-left { display: flex; align-items: center; gap: 12px; }
+    .menu-btn { display: none; }
+    .wallet-pill { display: flex; align-items: center; gap: 6px; background: white; color: var(--pink-header); font-weight: 800; padding: 9px 14px; border-radius: 25px; box-shadow: 0 5px 15px var(--shadow-pink); font-size: .95rem; cursor: pointer; }
+    .wallet-pill.pop { animation: pop .45s; }
+    @keyframes pop { 40% { transform: scale(1.18); } }
+    body.es-admin #btn-admin-panel { display: inline-block; }
+
+    #side-overlay { position: fixed; inset: 0; background: rgba(40,10,30,.5); backdrop-filter: blur(3px); opacity: 0; visibility: hidden; transition: .3s; z-index: 1400; }
+    #sidebar { position: fixed; top: 0; bottom: 0; left: 0; width: min(290px, 82vw); background: white; z-index: 1500; transform: translateX(-102%); transition: transform .35s cubic-bezier(.22,1,.36,1); display: flex; flex-direction: column; padding: 18px 14px; box-sizing: border-box; box-shadow: 8px 0 30px rgba(223,88,139,.3); overflow-y: auto; }
+    body.menu-abierto #sidebar { transform: none; }
+    body.menu-abierto #side-overlay { opacity: 1; visibility: visible; }
+    .side-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-family: 'Dancing Script', cursive; font-size: 1.9rem; color: var(--pink-header); }
+    .side-link { display: flex; align-items: center; gap: 12px; width: 100%; background: none; border: none; padding: 13px 12px; border-radius: 14px; font: 700 1rem 'Poppins', sans-serif; color: #555; cursor: pointer; text-align: left; }
+    .side-link.activo-nav { background: var(--pink-bg); color: var(--pink-header); }
+    .side-link .ic { font-style: normal; font-size: 1.3rem; width: 28px; text-align: center; }
+    .side-dot { display: none; width: 10px; height: 10px; border-radius: 50%; background: var(--yellow-alert); box-shadow: 0 0 8px rgba(255,235,59,.9); margin-left: auto; }
+    .side-wallet { margin-top: auto; padding: 14px; background: var(--pink-gradient-light); border-radius: 14px; font-weight: 800; color: var(--pink-header); text-align: center; }
+    #side-admin { display: none; }
+    body.es-admin #side-admin { display: flex; }
+    .x { background: var(--pink-bg); border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 1rem; cursor: pointer; color: var(--pink-header); font-family: inherit; }
+    @media (max-width: 899px) { .top-left-icons, .desk { display: none !important; } .menu-btn { display: flex; } }
+    @media (min-width: 900px) { #sidebar, #side-overlay { display: none; } }
+
+    /* Banners del inicio */
+    .banners { display: flex; flex-direction: column; gap: 18px; max-width: 760px; margin: 0 auto 30px; }
+    .banner { position: relative; height: 190px; border-radius: 22px; background-size: cover; background-position: center; background-color: var(--pink-soft); box-shadow: 0 10px 25px rgba(223,88,139,.25); cursor: pointer; display: flex; align-items: flex-end; text-align: left; overflow: hidden; transition: transform .3s, box-shadow .3s; color: white; }
+    .banner:hover { transform: translateY(-4px) scale(1.01); box-shadow: 0 16px 32px rgba(223,88,139,.35); }
+    .banner-txt { padding: 18px 22px; }
+    .banner h3 { margin: 0 0 4px; font-size: 1.7rem; font-weight: 800; text-shadow: 0 2px 8px rgba(0,0,0,.4); }
+    .banner p { margin: 0; font-size: .9rem; opacity: .95; }
+    .banner-go { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font-size: 2.4rem; opacity: .85; transition: transform .3s; }
+    .banner:hover .banner-go { transform: translate(6px, -50%); }
+    .banner.boo h3 { font-family: 'Shlop', system-ui; font-size: 2.4rem; letter-spacing: 2px; }
+    .banner.soon { background: transparent; border: 2px dashed var(--pink-soft); box-shadow: none; cursor: default; color: var(--pink-header); height: 110px; align-items: center; }
+    .banner.soon:hover { transform: none; box-shadow: none; }
+    .banner.soon h3, .banner.soon p { text-shadow: none; }
+    @media (max-width: 600px) { .banner { height: 160px; } .banner h3 { font-size: 1.4rem; } .banner.boo h3 { font-size: 2rem; } }
+
+    /* Notificaciones: la versión ya no pisa el título */
+    .noti-item .version { position: static; display: inline-block; background: var(--pink-bg); padding: 3px 10px; border-radius: 10px; margin-bottom: 8px; font-size: .75rem; }
+    .noti-item h4 { padding-right: 0; overflow-wrap: anywhere; }
+
+    /* Tickets */
+    #grid-inventario { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+    .codigo { font-family: monospace; background: var(--pink-gradient-light); border-radius: 8px; padding: 4px; font-size: .85rem; color: var(--pink-header); margin-bottom: 10px; letter-spacing: 1px; }
+    .t-actions { display: flex; flex-direction: column; gap: 6px; }
+    .btn-mini { background: white; border: 2px solid var(--pink-bg); color: var(--pink-header); border-radius: 12px; padding: 7px 10px; font: 700 .8rem 'Poppins', sans-serif; cursor: pointer; }
+    .btn-mini.ok { background: var(--pink-header); color: white; border-color: var(--pink-header); }
+    .ticket.usado { opacity: .6; }
+    .sello { position: absolute; top: 12px; left: -6px; transform: rotate(-12deg); background: #4caf50; color: white; font-size: .7rem; font-weight: 800; padding: 3px 10px; border-radius: 6px; z-index: 2; }
+
+    /* Convertidor */
+    .pools { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 26px; }
+    .pool { background: white; border-radius: 20px; padding: 18px 26px; min-width: 150px; box-shadow: 0 8px 20px rgba(223,88,139,.15); }
+    .pool .big { font-size: 2.2rem; } .pool b { display: block; font-size: 1.8rem; color: var(--pink-header); } .pool small { color: #8a5a6e; }
+    .conv-box { max-width: 380px; margin: 0 auto; background: white; border-radius: 22px; padding: 22px; box-shadow: 0 10px 25px rgba(223,88,139,.15); }
+    .stepper { display: flex; align-items: center; justify-content: center; gap: 18px; margin: 14px 0; }
+    .stepper button { width: 44px; height: 44px; border-radius: 50%; border: none; background: var(--pink-bg); color: var(--pink-header); font-size: 1.5rem; font-weight: 800; cursor: pointer; }
+    .stepper span { font-size: 2.2rem; font-weight: 800; color: var(--pink-header); min-width: 60px; }
+    .btn-buy:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; transform: none; }
+
+    /* Panel admin */
+    .panel-box { max-width: 620px; max-height: 88vh; overflow-y: auto; text-align: left; padding: 18px; }
+    .panel-head { display: flex; justify-content: space-between; align-items: center; }
+    .panel-head h3 { margin: 0; color: var(--pink-header); }
+    .panel-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 12px 0; position: sticky; top: -18px; background: var(--pink-bg); z-index: 2; scrollbar-width: none; }
+    .chip-tab { flex: none; background: white; color: var(--pink-header); border: none; padding: 8px 14px; border-radius: 18px; font: 700 .8rem 'Poppins', sans-serif; cursor: pointer; }
+    .chip-tab.on { background: var(--pink-header); color: white; }
+    .p-card { background: white; border-radius: 16px; padding: 14px; margin-bottom: 14px; }
+    .p-card h4 { margin: 0 0 10px; font-size: 1rem; }
+    .p-row { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; }
+    .p-row input, .p-row select { flex: 1; text-align: center; }
+    .panel-box input, .panel-box select { padding: 8px; border: 2px solid var(--pink-soft); border-radius: 8px; font-family: inherit; box-sizing: border-box; min-width: 0; }
+    .full-in { width: 100%; margin-bottom: 6px; }
+    .p-btn { flex: none; background: var(--pink-bg); color: var(--pink-header); border: none; border-radius: 8px; padding: 8px 10px; font: 700 .8rem 'Poppins', sans-serif; cursor: pointer; }
+    .p-btn.full { width: 100%; margin-top: 4px; background: var(--pink-header); color: white; padding: 10px; }
+    .p-item { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; background: white; padding: 8px; border-radius: 12px; }
+    .p-item .in-e { width: 44px; text-align: center; flex: none; } .p-item .in-n { flex: 1; } .p-item .in-p { width: 64px; flex: none; }
+    .p-h { margin: 16px 0 8px; color: var(--pink-header); }
+    .p-note { font-size: .8rem; color: #8a5a6e; }
+    .p-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    /* Pie de página más grande */
+    .waves-container { position: relative; }
+    .waves { height: clamp(120px, 17vw, 190px); }
+    .foot-txt { position: absolute; bottom: 12px; left: 0; right: 0; text-align: center; color: rgba(255,255,255,.75); font-size: .85rem; font-weight: 600; line-height: 1.4; }
   </style>
 </head>
 <body class="cargando">
@@ -286,17 +375,26 @@
 
   <!-- Barra Superior -->
   <div class="top-bar">
-    <div class="top-left-icons">
-      <button class="nav-btn-circle" data-vista="vista-notis" onclick="cambiarVista('vista-notis')" aria-label="Notificaciones">
-        <svg viewBox="0 0 24 24"><path d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.36 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.63 5.36 6 7.92 6 11V16L4 18V19H20V18L18 16Z"/></svg>
-        <div class="noti-badge" id="badge-campana"></div>
+    <div class="top-left">
+      <button class="nav-btn-circle menu-btn" onclick="abrirMenu()" aria-label="Menú">
+        <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        <div class="noti-badge" id="badge-menu"></div>
       </button>
-      <button class="nav-btn-circle" data-vista="vista-tienda" onclick="cambiarVista('vista-tienda')" aria-label="Tienda">
-        <svg viewBox="0 0 24 24"><path d="M7 18C5.9 18 5.01 18.9 5.01 20C5.01 21.1 5.9 22 7 22C8.1 22 9 21.1 9 20C9 18.9 8.1 18 7 18ZM1 2V4H3L6.6 11.59L5.24 14.04C5.09 14.32 5 14.65 5 15C5 16.1 5.9 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.58 17.3 11.97L20.88 5.48C20.95 5.34 21 5.17 21 5C21 4.45 20.55 4 20 4H5.21L4.27 2H1ZM17 18C15.9 18 15.01 18.9 15.01 20C15.01 21.1 15.9 22 17 22C18.1 22 19 21.1 19 20C19 18.9 18.1 18 17 18Z"/></svg>
-      </button>
-      <button class="nav-btn-circle" data-vista="vista-inventario" onclick="cambiarVista('vista-inventario')" aria-label="Inventario">
-        <svg viewBox="0 0 24 24"><path d="M20 6H17V4C17 2.9 16.1 2 15 2H9C7.9 2 7 2.9 7 4V6H4C2.9 6 2 6.9 2 8V19C2 20.1 2.9 21 4 21H20C21.1 21 22 20.1 22 19V8C22 6.9 21.1 6 20 6ZM9 4H15V6H9V4ZM20 19H4V8H20V19Z"/></svg>
-      </button>
+      <div class="top-left-icons">
+        <button class="nav-btn-circle" data-vista="vista-notis" onclick="cambiarVista('vista-notis')" aria-label="Notificaciones">
+          <svg viewBox="0 0 24 24"><path d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.36 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.63 5.36 6 7.92 6 11V16L4 18V19H20V18L18 16Z"/></svg>
+          <div class="noti-badge" id="badge-campana"></div>
+        </button>
+        <button class="nav-btn-circle" data-vista="vista-tienda" onclick="cambiarVista('vista-tienda')" aria-label="Tienda">
+          <svg viewBox="0 0 24 24"><path d="M7 18C5.9 18 5.01 18.9 5.01 20C5.01 21.1 5.9 22 7 22C8.1 22 9 21.1 9 20C9 18.9 8.1 18 7 18ZM1 2V4H3L6.6 11.59L5.24 14.04C5.09 14.32 5 14.65 5 15C5 16.1 5.9 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.58 17.3 11.97L20.88 5.48C20.95 5.34 21 5.17 21 5C21 4.45 20.55 4 20 4H5.21L4.27 2H1ZM17 18C15.9 18 15.01 18.9 15.01 20C15.01 21.1 15.9 22 17 22C18.1 22 19 21.1 19 20C19 18.9 18.1 18 17 18Z"/></svg>
+        </button>
+        <button class="nav-btn-circle" data-vista="vista-inventario" onclick="cambiarVista('vista-inventario')" aria-label="Inventario">
+          <svg viewBox="0 0 24 24"><path d="M20 6H17V4C17 2.9 16.1 2 15 2H9C7.9 2 7 2.9 7 4V6H4C2.9 6 2 6.9 2 8V19C2 20.1 2.9 21 4 21H20C21.1 21 22 20.1 22 19V8C22 6.9 21.1 6 20 6ZM9 4H15V6H9V4ZM20 19H4V8H20V19Z"/></svg>
+        </button>
+        <button class="nav-btn-circle" data-vista="vista-convertir" onclick="cambiarVista('vista-convertir')" aria-label="Convertidor">
+          <svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg>
+        </button>
+      </div>
     </div>
 
     <div class="top-center-home" onclick="cambiarVista('vista-hub')" aria-label="Inicio">
@@ -304,10 +402,25 @@
     </div>
 
     <div class="top-right">
-      <button class="btn-pill" id="btn-admin-panel" onclick="abrirAdminPanel()">⚙️<span class="hide-sm"> Admin</span></button>
-      <button class="btn-pill" onclick="cambiarVista('vista-coleccion')">Colección</button>
+      <div class="wallet-pill" id="top-hearts" onclick="cambiarVista('vista-convertir')">💖 <span id="hearts-top">0</span></div>
+      <button class="btn-pill desk" id="btn-admin-panel" onclick="abrirPanel()">⚙️ Admin</button>
+      <button class="btn-pill desk" onclick="cambiarVista('vista-coleccion')">Colección</button>
     </div>
   </div>
+
+  <!-- Barra lateral (celular) -->
+  <div id="side-overlay" onclick="cerrarMenu()"></div>
+  <aside id="sidebar">
+    <div class="side-head">Amorcito Store <button class="x" onclick="cerrarMenu()">✕</button></div>
+    <button class="side-link" data-vista="vista-hub" onclick="irA('vista-hub')"><i class="ic">🏠</i> Inicio</button>
+    <button class="side-link" data-vista="vista-notis" onclick="irA('vista-notis')"><i class="ic">🔔</i> Notificaciones <span class="side-dot" id="side-dot"></span></button>
+    <button class="side-link" data-vista="vista-tienda" onclick="irA('vista-tienda')"><i class="ic">🛍️</i> Tienda</button>
+    <button class="side-link" data-vista="vista-inventario" onclick="irA('vista-inventario')"><i class="ic">🎟️</i> Inventario</button>
+    <button class="side-link" data-vista="vista-convertir" onclick="irA('vista-convertir')"><i class="ic">🔄</i> Convertidor</button>
+    <button class="side-link" data-vista="vista-coleccion" onclick="irA('vista-coleccion')"><i class="ic">🃏</i> Colección</button>
+    <button class="side-link" id="side-admin" onclick="cerrarMenu();abrirPanel()"><i class="ic">⚙️</i> Panel Admin</button>
+    <div class="side-wallet" id="side-wallet">💖 0 · 🍬 0</div>
+  </aside>
 
   <header class="hero-banner">
     <div class="circle-deco circle-1"></div>
@@ -316,26 +429,11 @@
     <p>Historias, preguntas y sorpresas para compartir juntos.</p>
   </header>
 
-  <!-- VISTA: HUB -->
+  <div id="views">
+  <!-- VISTA: HUB (banners) -->
   <main id="vista-hub" class="view-section activa main-container">
     <div class="cursive-title">Elige tu destino ♥</div>
-    <div class="hub-grid">
-      <div class="hub-card canva" onclick="cambiarVista('vista-canva')">
-        <div class="hub-img" style="background-image: url('canvastore.png');"></div>
-        <h3>Canva Store</h3>
-        <p style="margin:0; font-size:0.9rem; opacity:0.8;">Juegos de preguntas y recuerdos hechos a mano.</p>
-      </div>
-      <div class="hub-card boo" onclick="window.location.href=URL_BOO">
-        <div class="hub-img" style="background-image: url('boostore.png');"></div>
-        <h3>BOO! STORE</h3>
-        <p style="margin:0; font-size:0.9rem; opacity:0.8;">La mansión del terror. Entra bajo tu propio riesgo.</p>
-      </div>
-      <div class="hub-card soon">
-        <div class="big">✨</div>
-        <h3 style="color:var(--pink-header);">Próximo juego</h3>
-        <p style="margin:0; font-size:0.9rem; opacity:0.8;">Aquí aparecerá el siguiente destino.</p>
-      </div>
-    </div>
+    <div class="banners" id="hub-banners"></div>
   </main>
 
   <!-- VISTA: CANVA -->
@@ -358,33 +456,41 @@
     </div>
   </section>
 
-  <!-- VISTA: TIENDA (prototipo) -->
+  <!-- VISTA: TIENDA -->
   <section id="vista-tienda" class="view-section main-container">
     <button class="btn-volver" onclick="cambiarVista('vista-hub')">⬅ Volver al Inicio</button>
     <div class="cursive-title">Tienda de Amorcito</div>
-    <div class="proto-tag">Prototipo: las compras aún no están activas</div><br>
-    <div class="wallet">🍬 <span id="saldo">0</span></div>
-
-    <div class="snack-box">
-      <h3>Neon Coffin Snacks</h3>
-      <div class="snack-row" id="row-snacks"></div>
-    </div>
-
-    <div class="shop-wrap">
-      <h3 class="shop-h"><span>🎟️</span> Citas VIP</h3>
-      <div class="grid-items" id="grid-citas"></div>
-      <h3 class="shop-h"><span>💝</span> Gestos Especiales</h3>
-      <div class="grid-items" id="grid-gestos"></div>
-    </div>
+    <div class="wallet">💖 <span id="saldo">0</span></div>
+    <div id="tienda-contenido"></div>
   </section>
 
-  <!-- VISTA: INVENTARIO (prototipo) -->
+  <!-- VISTA: INVENTARIO -->
   <section id="vista-inventario" class="view-section main-container">
     <button class="btn-volver" onclick="cambiarVista('vista-hub')">⬅ Volver al Inicio</button>
-    <div class="cursive-title">Mi mochila</div>
-    <div class="proto-tag">Prototipo</div>
-    <p class="vacio-msg">Tu mochila está vacía. Lo que compres en la tienda aparecerá aquí.</p>
+    <div class="cursive-title">Mi inventario</div>
+    <p class="sub-title">Tus tickets: cópialos, úsalos o véndelos.</p>
+    <p class="vacio-msg" id="inv-vacio">Aún no tienes tickets. Lo que compres en la tienda aparecerá aquí.</p>
     <div class="grid-items" id="grid-inventario"></div>
+  </section>
+
+  <!-- VISTA: CONVERTIDOR -->
+  <section id="vista-convertir" class="view-section main-container">
+    <button class="btn-volver" onclick="cambiarVista('vista-hub')">⬅ Volver al Inicio</button>
+    <div class="cursive-title">Convertidor</div>
+    <p class="sub-title">1 💖 = <b id="tasa-txt">5</b> 🍬</p>
+    <div class="pools">
+      <div class="pool"><div class="big">🍬</div><b id="pool-candies">0</b><small>Piscina de caramelos</small></div>
+      <div class="pool"><div class="big">💖</div><b id="pool-hearts">0</b><small>Corazones</small></div>
+    </div>
+    <div class="conv-box">
+      <div style="font-weight:700;color:#8a5a6e;">¿Cuántos corazones quieres?</div>
+      <div class="stepper">
+        <button onclick="convStep(-1)">−</button><span id="conv-n">0</span><button onclick="convStep(1)">＋</button>
+      </div>
+      <button class="btn-mini" onclick="convMax()">Máximo</button>
+      <p id="conv-cost" style="color:var(--pink-header);font-weight:700;">Costo: 0 🍬</p>
+      <button class="btn-buy" id="btn-conv" onclick="convertir()">Convertir</button>
+    </div>
   </section>
 
   <!-- VISTA: COLECCIÓN (prototipo) -->
@@ -411,6 +517,8 @@
     </div>
   </section>
 
+  </div><!-- /views -->
+
   <!-- ONDAS -->
   <div class="waves-container">
     <svg class="waves" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
@@ -418,6 +526,16 @@
       <path fill="#7a285c" d="M0,224L48,229.3C96,235,192,245,288,234.7C384,224,480,192,576,176C672,160,768,160,864,170.7C960,181,1056,203,1152,202.7C1248,203,1344,181,1392,170.7L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
       <path fill="#1a0b2e" d="M0,288L48,272C96,256,192,224,288,218.7C384,213,480,235,576,245.3C672,256,768,256,864,245.3C960,235,1056,213,1152,208C1248,203,1344,213,1392,218.7L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
     </svg>
+    <div class="foot-txt">Hecho con 💖 para ti · Amorcito Store</div>
+  </div>
+
+  <!-- PANEL ADMIN -->
+  <div class="modal-overlay" id="modal-panel">
+    <div class="modal-box panel-box">
+      <div class="panel-head"><h3>⚙️ Panel Admin</h3><button class="x" onclick="cerrarModal('modal-panel')">✕</button></div>
+      <div class="panel-tabs" id="panel-tabs"></div>
+      <div id="panel-body"></div>
+    </div>
   </div>
 
   <!-- MODAL ADMIN -->
@@ -455,6 +573,9 @@
     const loaderInicio = Date.now();
     let loaderOculto = false;
     let msgIdx = 0;
+    const pendientes = new Set(['notis', 'wallet', 'config', 'catalogo', 'inventario', 'tiendas']);
+    function marcar(k) { pendientes.delete(k); if (!pendientes.size) ocultarLoader(); }
+    setTimeout(() => ocultarLoader(), 14000);
 
     (function crearCorazones() {
       const cont = $('ld-float');
@@ -516,43 +637,51 @@
     // 3. MODO ADMIN
     // ==========================================
     const esAdmin = new URLSearchParams(window.location.search).get('modo') === 'admin';
-    if (esAdmin) $('btn-admin-panel').style.display = 'block';
+    if (esAdmin) document.body.classList.add('es-admin');
 
     // ==========================================
     // 4. NAVEGACIÓN SPA (sin saltos al inicio)
     // ==========================================
     let navegando = false;
     function cambiarVista(idVista) {
-      const nueva = $(idVista);
-      const actual = document.querySelector('.view-section.activa');
+      const nueva = $(idVista), actual = document.querySelector('.view-section.activa'), cont = $('views');
       if (navegando || nueva === actual) return;
+      document.querySelectorAll('[data-vista]').forEach(b => b.classList.toggle('activo-nav', b.dataset.vista === idVista));
 
-      document.querySelectorAll('.nav-btn-circle').forEach(b => b.classList.toggle('activo-nav', b.dataset.vista === idVista));
+      // Se fija la altura actual para que no haya brinco; luego se anima hasta la nueva
+      const h0 = cont.offsetHeight;
+      cont.style.height = h0 + 'px'; cont.style.overflow = 'hidden';
+      navegando = true;
 
-      const mostrar = () => {
+      const entrar = () => {
+        if (actual) actual.classList.remove('saliendo');
         nueva.classList.add('activa');
-        // Solo se corrige el scroll si quedaste debajo del inicio de la nueva sección
+        nueva.style.flex = '0 0 auto';
+        const fijo = ['.top-bar', '.hero-banner', '.waves-container'].reduce((a, q) => a + document.querySelector(q).offsetHeight, 0);
+        const h1 = Math.max(nueva.offsetHeight, window.innerHeight - fijo);
+        nueva.style.flex = '';
+        void cont.offsetHeight;
+        cont.style.height = h1 + 'px';
+
         const barra = document.querySelector('.top-bar').offsetHeight;
-        const tope = nueva.getBoundingClientRect().top + window.scrollY - barra;
-        if (window.scrollY > tope) window.scrollTo({ top: Math.max(tope, 0), behavior: 'instant' });
+        const tope = cont.getBoundingClientRect().top + window.scrollY - barra;
+        if (window.scrollY > tope) window.scrollTo({ top: Math.max(tope, 0), behavior: 'smooth' });
 
         if (idVista === 'vista-notis') {
-          $('badge-campana').style.display = 'none';
+          setBadge(false);
           if (notificacionesGlobales.length > 0) {
             ultimaVista = notificacionesGlobales[0].timestamp;
             localStorage.setItem('ultimaNotiId', ultimaVista);
           }
         }
         navegando = false;
+        clearTimeout(cambiarVista.t);
+        cambiarVista.t = setTimeout(() => { cont.style.height = ''; cont.style.overflow = ''; }, 500);
       };
 
-      if (!actual) { mostrar(); return; }
-      navegando = true;
-      actual.classList.remove('activa');
-      actual.classList.add('saliendo');
-      setTimeout(() => { actual.classList.remove('saliendo'); mostrar(); }, 220);
+      if (actual) { actual.classList.remove('activa'); actual.classList.add('saliendo'); setTimeout(entrar, 220); }
+      else entrar();
     }
-
     function toast(msg) {
       const t = $('toast'); t.textContent = msg; t.classList.add('on');
       clearTimeout(toast.id); toast.id = setTimeout(() => t.classList.remove('on'), 1800);
@@ -591,15 +720,15 @@
         }).join('');
 
         const hayNuevas = notificacionesGlobales.some(n => n.timestamp > ultimaVista || n.forzarNueva);
-        badge.style.display = (hayNuevas && !$('vista-notis').classList.contains('activa')) ? 'block' : 'none';
+        setBadge(hayNuevas && !$('vista-notis').classList.contains('activa'));
       } else {
         notificacionesGlobales = [];
         contenedor.innerHTML = '<p style="color:var(--pink-header); text-align:center;">No hay mensajes nuevos.</p>';
       }
-      ocultarLoader();
+      marcar('notis');
     }, (err) => {
       $('lista-notis').innerHTML = '<p style="color:var(--pink-header); text-align:center;">No pude cargar los mensajes. Revisa tu conexión y recarga.</p>';
-      ocultarLoader();
+      marcar('notis');
     });
 
     // ==========================================
@@ -660,10 +789,6 @@
     // ==========================================
     // 7. PROTOTIPOS (datos de ejemplo, luego irán a Firebase)
     // ==========================================
-    const MONEDA = '🍬';
-    const SNACKS = [['Bonobon', 100], ['Chifles', 120], ['Helado', 150], ['Bebida', 120], ['Antojo', 180]];
-    const CITAS = [['🕹️', 'Arcade Solari', 600], ['🍿', 'Cineplanet VIP', 500], ['🍫', 'Cata a Ciegas', 300], ['🎨', 'Arte Feo', 200], ['🍕', 'Pizzería Casera', 400]];
-    const GESTOS = [['💆', 'Masaje VIP', 400], ['🧁', 'Repostero Novato', 300], ['☕', 'Desayuno Distancia', 360], ['🕊️', 'Pase Anti-Enojo', 200]];
     const COLECCION = [
       ['🐱', 'Gatito', 'comun'], ['🌷', 'Tulipán', 'comun'], ['💌', 'Carta', 'comun'], ['🧸', 'Osito', 'comun'],
       ['🕯️', 'Vela', 'rara'], ['🔮', 'Bola mágica', 'rara'], ['👻', 'Fantasmita', 'rara'], ['🦋', 'Mariposa', 'rara'],
@@ -671,25 +796,6 @@
     ];
     const RAREZA = { comun: 'Común', rara: 'Rara', epica: 'Épica' };
 
-    function pintarTienda() {
-      $('row-snacks').innerHTML = SNACKS.map(([n, p]) =>
-        `<button class="btn-buy" onclick="comprar('${n}', ${p})">${n} (${p} ${MONEDA})</button>`).join('');
-      const tarjeta = ([e, n, p]) => `
-        <div class="item">
-          <div class="emoji">${e}</div>
-          <h4>${n}</h4>
-          <button class="btn-buy" onclick="comprar('${n}', ${p})">Comprar - ${p} ${MONEDA}</button>
-        </div>`;
-      $('grid-citas').innerHTML = CITAS.map(tarjeta).join('');
-      $('grid-gestos').innerHTML = GESTOS.map(tarjeta).join('');
-    }
-    function comprar(nombre, precio) {
-      toast(nombre + ' · ' + precio + ' ' + MONEDA + ' (prototipo, aún sin compras)');
-    }
-    function pintarInventario() {
-      $('grid-inventario').innerHTML = Array.from({ length: 12 }, (_, i) =>
-        i < 8 ? '<div class="item vacio">＋</div>' : '<div class="item bloqueado">🔒</div>').join('');
-    }
     function pintarColeccion() {
       $('grid-coleccion').innerHTML = COLECCION.map(([e, n, r]) => `
         <div class="item misterio">
@@ -702,12 +808,232 @@
       $('prog-txt').textContent = got + ' de ' + COLECCION.length + ' descubiertos';
       $('prog-bar').style.width = (got / COLECCION.length * 100) + '%';
     }
-    pintarTienda(); pintarInventario(); pintarColeccion();
+    pintarColeccion();
 
-    // Retraso escalonado para la entrada de las cartas
-    document.querySelectorAll('.hub-card, .card, .item, .skeleton').forEach(el => {
-      el.style.setProperty('--i', Math.min(Array.from(el.parentNode.children).indexOf(el), 10));
+
+    // ==========================================
+    // 8. MONEDAS, TIENDA, INVENTARIO, CONVERTIDOR (Firebase: /amorcito)
+    // ==========================================
+    const ref = (p) => database.ref('amorcito/' + p);
+    const num = (v) => Math.max(0, Math.floor(Number(v) || 0));
+    const CATS = [
+      { id: 'snacks', titulo: 'Neon Coffin Snacks', icono: '🍬' },
+      { id: 'citas', titulo: 'Citas VIP', icono: '🎟️' },
+      { id: 'gestos', titulo: 'Gestos Especiales', icono: '💝' }
+    ];
+    // Precios en 💖 = precio antiguo en 🍬 ÷ 5
+    const CATALOGO_INICIAL = [
+      ['snacks', '🍬', 'Bonobon', 20], ['snacks', '🥔', 'Chifles', 24], ['snacks', '🍦', 'Helado', 30], ['snacks', '🥤', 'Bebida', 24], ['snacks', '🍪', 'Antojo', 36],
+      ['citas', '🕹️', 'Arcade Solari', 120], ['citas', '🍿', 'Cineplanet VIP', 100], ['citas', '🍫', 'Cata a Ciegas', 60], ['citas', '🎨', 'Arte Feo', 40], ['citas', '🍕', 'Pizzería Casera', 80],
+      ['gestos', '💆', 'Masaje VIP', 80], ['gestos', '🧁', 'Repostero Novato', 60], ['gestos', '☕', 'Desayuno Distancia', 72], ['gestos', '🕊️', 'Pase Anti-Enojo', 40]
+    ];
+    const TIENDAS_BASE = [
+      { titulo: 'Canva Store', desc: 'Juegos de preguntas y recuerdos hechos a mano.', img: 'canvastore.png', url: 'vista-canva', estilo: 'canva' },
+      { titulo: 'BOO! STORE', desc: 'La mansión del terror. Entra bajo tu propio riesgo.', img: 'boostore.png', url: URL_BOO, estilo: 'boo' }
+    ];
+    let wallet = { hearts: 0, candies: 0 }, config = { tasa: 5, venta: 50 };
+    let catalogo = [], inventario = [], tiendas = TIENDAS_BASE.map(t => ({ ...t })), sembrado = false, convN = 0, tabPanel = 'monedas';
+
+    function escalonar() {
+      document.querySelectorAll('.hub-card, .card, .item, .skeleton, .banner').forEach(el =>
+        el.style.setProperty('--i', Math.min(Array.from(el.parentNode.children).indexOf(el), 10)));
+    }
+    function setBadge(on) {
+      ['badge-campana', 'badge-menu'].forEach(id => $(id).style.display = on ? 'block' : 'none');
+      $('side-dot').style.display = on ? 'block' : 'none';
+    }
+
+    // ---- Menú lateral (celular)
+    function abrirMenu() { document.body.classList.add('menu-abierto'); }
+    function cerrarMenu() { document.body.classList.remove('menu-abierto'); }
+    function irA(v) { cerrarMenu(); setTimeout(() => cambiarVista(v), 200); }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { cerrarMenu(); if ($('modal-panel').classList.contains('activo')) cerrarModal('modal-panel'); } });
+    function cerrarModal(id) { const m = $(id); m.classList.add('saliendo'); setTimeout(() => m.classList.remove('activo', 'saliendo'), 200); }
+
+    // ---- Pintar
+    function pintarWallet() {
+      const antes = $('hearts-top').textContent;
+      ['hearts-top', 'saldo', 'pool-hearts'].forEach(id => $(id).textContent = wallet.hearts);
+      $('pool-candies').textContent = wallet.candies;
+      $('side-wallet').textContent = '💖 ' + wallet.hearts + ' · 🍬 ' + wallet.candies;
+      if (antes !== String(wallet.hearts)) { const p = $('top-hearts'); p.classList.remove('pop'); void p.offsetWidth; p.classList.add('pop'); }
+      pintarConv();
+    }
+    function pintarHub() {
+      $('hub-banners').innerHTML = tiendas.map((t, i) =>
+        `<div class="banner ${esc(t.estilo || '')}" style="background-image:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(60,10,40,.75)),url('${esc(t.img)}')" onclick="abrirTienda(${i})"><div class="banner-txt"><h3>${esc(t.titulo)}</h3><p>${esc(t.desc)}</p></div><span class="banner-go">›</span></div>`).join('')
+        + `<div class="banner soon"><div class="banner-txt"><h3>✨ Próximo juego</h3><p>Aquí aparecerá el siguiente destino.</p></div></div>`;
+      escalonar();
+    }
+    function abrirTienda(i) {
+      const u = (tiendas[i] && tiendas[i].url) || '';
+      if (u.startsWith('vista-')) cambiarVista(u); else if (u) window.location.href = u;
+    }
+    function pintarTienda() {
+      const act = catalogo.filter(i => i.activo !== false), caja = $('tienda-contenido');
+      if (!act.length) { caja.innerHTML = '<p class="vacio-msg">La tienda se está surtiendo ✨</p>'; return; }
+      const por = (c) => act.filter(i => i.cat === c);
+      let h = '';
+      if (por('snacks').length) h += `<div class="snack-box"><h3>${CATS[0].titulo}</h3><div class="snack-row">${por('snacks').map(i => `<button class="btn-buy" onclick="comprar('${i.id}')">${esc(i.nombre)} (${i.precio} 💖)</button>`).join('')}</div></div>`;
+      h += '<div class="shop-wrap">';
+      CATS.slice(1).forEach(c => {
+        const l = por(c.id);
+        if (l.length) h += `<h3 class="shop-h"><span>${c.icono}</span> ${c.titulo}</h3><div class="grid-items">${l.map(i => `<div class="item"><div class="emoji">${esc(i.emoji)}</div><h4>${esc(i.nombre)}</h4><button class="btn-buy" onclick="comprar('${i.id}')">Comprar - ${i.precio} 💖</button></div>`).join('')}</div>`;
+      });
+      caja.innerHTML = h + '</div>'; escalonar();
+    }
+    function pintarInventario() {
+      const ord = [...inventario].sort((a, b) => (a.estado === 'usado') - (b.estado === 'usado') || b.comprado - a.comprado);
+      $('inv-vacio').style.display = ord.length ? 'none' : 'block';
+      $('grid-inventario').innerHTML = ord.map(t => {
+        const u = t.estado === 'usado', r = Math.floor(num(t.precio) * config.venta / 100);
+        return `<div class="item ticket ${u ? 'usado' : ''}">${u ? '<span class="sello">USADO</span>' : ''}<div class="emoji">${esc(t.emoji)}</div><h4>${esc(t.nombre)}</h4><div class="codigo">${esc(t.codigo)}</div><div class="t-actions"><button class="btn-mini" onclick="copiar('${t.id}')">📋 Copiar</button>${u ? '' : `<button class="btn-mini ok" onclick="usar('${t.id}')">✨ Usar</button><button class="btn-mini" onclick="vender('${t.id}')">Vender +${r} 💖</button>`}</div></div>`;
+      }).join('');
+      escalonar();
+    }
+
+    // ---- Compra / venta / uso de tickets
+    const genCodigo = () => 'AMR-' + Array.from({ length: 5 }, () => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random() * 32)]).join('');
+    const nuevoTicket = (it) => ref('inventario').push({ itemId: it.id, nombre: it.nombre, emoji: it.emoji, precio: num(it.precio), codigo: genCodigo(), estado: 'activo', comprado: Date.now() });
+
+    function comprar(id) {
+      const it = catalogo.find(x => x.id === id); if (!it) return;
+      if (!confirm(`¿Comprar ${it.nombre} por ${it.precio} 💖?`)) return;
+      ref('wallet').transaction(w => {
+        w = w || { hearts: 0, candies: 0 };
+        if (num(w.hearts) < it.precio) return;
+        w.hearts = num(w.hearts) - it.precio; return w;
+      }, (e, ok) => {
+        if (!ok) { toast('Te faltan ' + (it.precio - wallet.hearts) + ' 💖'); return; }
+        nuevoTicket(it); toast('¡' + it.nombre + ' está en tu inventario! 🎟️');
+      });
+    }
+    function vender(id) {
+      const t = inventario.find(x => x.id === id); if (!t || t.estado === 'usado') return;
+      const r = Math.floor(num(t.precio) * config.venta / 100);
+      if (!confirm(`¿Vender ${t.nombre} y recibir ${r} 💖?`)) return;
+      ref('inventario/' + id).remove();
+      ref('wallet/hearts').transaction(v => num(v) + r);
+      toast('Vendido: +' + r + ' 💖');
+    }
+    function usar(id) {
+      const t = inventario.find(x => x.id === id); if (!t) return;
+      if (!confirm(`¿Usar ${t.nombre} ahora? Ya no se podrá vender.`)) return;
+      ref('inventario/' + id).update({ estado: 'usado', usado: Date.now() }); toast('¡Ticket usado! ✨');
+    }
+    function copiar(id) {
+      const t = inventario.find(x => x.id === id); if (!t) return;
+      const txt = '🎟️ ' + t.nombre + ' · ' + t.codigo, ok = () => toast('Copiado: ' + t.codigo);
+      const viejo = () => { const a = document.createElement('textarea'); a.value = txt; a.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(a); a.select(); try { document.execCommand('copy'); ok(); } catch (e) { toast('No pude copiar'); } a.remove(); };
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(txt).then(ok, viejo); else viejo();
+    }
+
+    // ---- Convertidor (caramelos → corazones)
+    const maxConv = () => Math.floor(wallet.candies / config.tasa);
+    function pintarConv() {
+      const m = maxConv(); convN = Math.max(m ? 1 : 0, Math.min(convN, m));
+      $('tasa-txt').textContent = config.tasa; $('conv-n').textContent = convN;
+      $('conv-cost').textContent = m ? 'Costo: ' + convN * config.tasa + ' 🍬' : 'Aún no te alcanzan los caramelos (necesitas ' + config.tasa + ' 🍬)';
+      $('btn-conv').disabled = convN < 1;
+    }
+    function convStep(d) { convN += d; pintarConv(); }
+    function convMax() { convN = maxConv(); pintarConv(); }
+    function convertir() {
+      const n = convN, costo = n * config.tasa; if (n < 1) return;
+      ref('wallet').transaction(w => {
+        w = w || { hearts: 0, candies: 0 };
+        if (num(w.candies) < costo) return;
+        w.candies = num(w.candies) - costo; w.hearts = num(w.hearts) + n; return w;
+      }, (e, ok) => toast(ok ? '¡Listo! +' + n + ' 💖' : 'No te alcanzan los caramelos'));
+    }
+
+    // ==========================================
+    // 9. PANEL ADMIN
+    // ==========================================
+    const TABS = [['monedas', '💰 Monedas'], ['catalogo', '🛍️ Catálogo'], ['tickets', '🎟️ Tickets'], ['tiendas', '🏪 Tiendas'], ['avisos', '📣 Avisos']];
+    function abrirPanel() { $('modal-panel').classList.add('activo'); renderPanel(); }
+    function setTab(t) { tabPanel = t; renderPanel(); }
+    function renderPanel() {
+      $('panel-tabs').innerHTML = TABS.map(([k, l]) => `<button class="chip-tab ${k === tabPanel ? 'on' : ''}" onclick="setTab('${k}')">${l}</button>`).join('');
+      $('panel-body').innerHTML = ({ monedas: pMonedas, catalogo: pCatalogo, tickets: pTickets, tiendas: pTiendas, avisos: pAvisos })[tabPanel]();
+    }
+    function refrescarPanel() {
+      const a = document.activeElement;
+      if ($('modal-panel').classList.contains('activo') && !(a && /INPUT|SELECT|TEXTAREA/.test(a.tagName) && $('panel-body').contains(a))) renderPanel();
+    }
+    const okToast = () => toast('Guardado ✔');
+
+    function pMonedas() {
+      const fila = (k, e, n) => `<div class="p-card"><h4>${e} ${n}: <b>${wallet[k]}</b></h4><div class="p-row">${[-50, -10, -1].map(d => `<button class="p-btn" onclick="ajustar('${k}',${d})">${d}</button>`).join('')}<input type="number" id="in-${k}" min="0" value="${wallet[k]}">${[1, 10, 50].map(d => `<button class="p-btn" onclick="ajustar('${k}',${d})">+${d}</button>`).join('')}</div><button class="p-btn full" onclick="fijar('${k}')">Fijar valor exacto</button></div>`;
+      return fila('hearts', '💖', 'Corazones') + fila('candies', '🍬', 'Caramelos (piscina aparte)')
+        + `<div class="p-card"><h4>⚖️ Reglas</h4><div class="p-grid2"><label class="p-note">Caramelos por 1 💖<input type="number" id="in-tasa" min="1" value="${config.tasa}" class="full-in"></label><label class="p-note">Venta de tickets (% devuelto)<input type="number" id="in-venta" min="0" max="100" value="${config.venta}" class="full-in"></label></div><button class="p-btn full" onclick="guardarConfig()">Guardar reglas</button></div>`;
+    }
+    function ajustar(k, d) { ref('wallet/' + k).transaction(v => Math.max(0, num(v) + d)); }
+    function fijar(k) { ref('wallet/' + k).set(num($('in-' + k).value)).then(okToast); }
+    function guardarConfig() { ref('config').set({ tasa: Math.max(1, num($('in-tasa').value)), venta: Math.min(100, num($('in-venta').value)) }).then(okToast); }
+
+    function pCatalogo() {
+      const fila = i => `<div class="p-item"><input class="in-e" value="${esc(i.emoji)}" onchange="editarItem('${i.id}','emoji',this.value)"><input class="in-n" value="${esc(i.nombre)}" onchange="editarItem('${i.id}','nombre',this.value)"><input class="in-p" type="number" min="0" value="${i.precio}" onchange="editarItem('${i.id}','precio',this.value)"><input type="checkbox" title="Visible" ${i.activo !== false ? 'checked' : ''} onchange="editarItem('${i.id}','activo',this.checked)"><button class="p-btn" onclick="borrarItem('${i.id}')">🗑</button></div>`;
+      return CATS.map(c => `<h4 class="p-h">${c.icono} ${c.titulo} <small class="p-note">(precio en 💖 · casilla = visible)</small></h4>` + (catalogo.filter(i => i.cat === c.id).map(fila).join('') || '<p class="p-note">Vacío</p>')).join('')
+        + `<div class="p-card"><h4>＋ Nuevo producto</h4><div class="p-row"><select id="ni-cat">${CATS.map(c => `<option value="${c.id}">${c.titulo}</option>`).join('')}</select><input id="ni-e" placeholder="🎁" style="flex:none;width:52px"></div><div class="p-row"><input id="ni-n" placeholder="Nombre" style="flex:2"><input id="ni-p" type="number" min="0" placeholder="💖"></div><button class="p-btn full" onclick="agregarItem()">Agregar</button></div>`;
+    }
+    function editarItem(id, campo, val) { ref('catalogo/' + id + '/' + campo).set(campo === 'precio' ? num(val) : val).then(okToast); }
+    function borrarItem(id) { if (confirm('¿Borrar este producto?')) ref('catalogo/' + id).remove(); }
+    function agregarItem() {
+      const n = $('ni-n').value.trim(); if (!n) { toast('Falta el nombre'); return; }
+      ref('catalogo').push({ cat: $('ni-cat').value, emoji: $('ni-e').value.trim() || '🎁', nombre: n, precio: num($('ni-p').value), activo: true, orden: Date.now() }).then(okToast);
+    }
+    function sembrarCatalogo() {
+      const o = {}; CATALOGO_INICIAL.forEach(([cat, emoji, nombre, precio], i) => o['p' + (i + 1)] = { cat, emoji, nombre, precio, activo: true, orden: i });
+      ref('catalogo').set(o);
+    }
+
+    function pTickets() {
+      const opts = catalogo.map(i => `<option value="${i.id}">${esc(i.emoji)} ${esc(i.nombre)}</option>`).join('');
+      const filas = [...inventario].sort((a, b) => b.comprado - a.comprado).map(t => `<div class="p-item"><span style="flex:1">${esc(t.emoji)} ${esc(t.nombre)}<br><small class="p-note">${esc(t.codigo)} · ${t.estado === 'usado' ? '✅ usado' : '🟢 activo'}</small></span><button class="p-btn" onclick="toggleUsado('${t.id}')">${t.estado === 'usado' ? '↩️ Reactivar' : '✅ Usado'}</button><button class="p-btn" onclick="borrarTicket('${t.id}')">🗑</button></div>`).join('') || '<p class="p-note">No hay tickets todavía.</p>';
+      return `<div class="p-card"><h4>🎁 Regalar ticket</h4><div class="p-row"><select id="gift-item">${opts}</select></div><button class="p-btn full" onclick="regalarTicket()">Regalar</button></div><h4 class="p-h">Tickets</h4>` + filas;
+    }
+    function regalarTicket() { const it = catalogo.find(x => x.id === $('gift-item').value); if (it) { nuevoTicket(it); toast('Ticket regalado 🎁'); } }
+    function toggleUsado(id) { const t = inventario.find(x => x.id === id); if (!t) return; ref('inventario/' + id).update(t.estado === 'usado' ? { estado: 'activo', usado: null } : { estado: 'usado', usado: Date.now() }); }
+    function borrarTicket(id) { if (confirm('¿Borrar este ticket?')) ref('inventario/' + id).remove(); }
+
+    function pTiendas() {
+      return tiendas.map((t, i) => `<div class="p-card"><h4>${esc(t.titulo) || 'Tienda'}</h4>${[['titulo', 'Título'], ['desc', 'Descripción'], ['img', 'Imagen (ej: canvastore.png)'], ['url', 'Enlace o vista (ej: vista-canva)']].map(([k, l]) => `<input class="full-in" placeholder="${l}" value="${esc(t[k])}" onchange="editarTienda(${i},'${k}',this.value)">`).join('')}<button class="p-btn" onclick="borrarTienda(${i})">🗑 Quitar</button></div>`).join('')
+        + `<button class="p-btn full" onclick="nuevaTienda()">＋ Nueva tienda</button><p class="p-note">Se muestran como banners en Inicio, en este orden.</p>`;
+    }
+    const guardarTiendas = () => ref('tiendas').set(tiendas).then(okToast);
+    function editarTienda(i, k, v) { tiendas[i][k] = v.trim(); guardarTiendas(); }
+    function borrarTienda(i) { if (confirm('¿Quitar esta tienda del inicio?')) { tiendas.splice(i, 1); guardarTiendas(); } }
+    function nuevaTienda() { tiendas.push({ titulo: 'Nueva tienda', desc: '', img: '', url: '', estilo: '' }); guardarTiendas(); }
+
+    function pAvisos() {
+      return `<div class="p-card"><h4>📣 Notificaciones</h4><button class="p-btn full" onclick="abrirAdminPanel()">＋ Nuevo aviso</button><p class="p-note">Para editar, borrar o marcar como nueva, abre la bandeja de entrada en modo admin.</p></div>`;
+    }
+
+    // ==========================================
+    // 10. ESCUCHAR FIREBASE
+    // ==========================================
+    function escuchar(path, key, fn) {
+      ref(path).on('value', s => { fn(s.val()); refrescarPanel(); marcar(key); }, () => marcar(key));
+    }
+    escuchar('wallet', 'wallet', v => { wallet = { hearts: num(v && v.hearts), candies: num(v && v.candies) }; pintarWallet(); });
+    escuchar('config', 'config', v => {
+      config = { tasa: Math.max(1, num(v && v.tasa) || 5), venta: v && v.venta != null ? Math.min(100, num(v.venta)) : 50 };
+      pintarConv(); pintarInventario();
     });
+    escuchar('catalogo', 'catalogo', v => {
+      if (!v && esAdmin && !sembrado) { sembrado = true; sembrarCatalogo(); }
+      catalogo = Object.keys(v || {}).map(id => ({ id, ...v[id] })).sort((a, b) => (a.orden || 0) - (b.orden || 0));
+      pintarTienda();
+    });
+    escuchar('inventario', 'inventario', v => {
+      inventario = Object.keys(v || {}).map(id => ({ id, ...v[id] })); pintarInventario();
+    });
+    escuchar('tiendas', 'tiendas', v => {
+      const arr = Object.values(v || {}).filter(Boolean);
+      tiendas = arr.length ? arr : TIENDAS_BASE.map(t => ({ ...t })); pintarHub();
+    });
+    pintarHub(); pintarTienda(); pintarInventario(); pintarWallet();
   </script>
 </body>
 </html>
