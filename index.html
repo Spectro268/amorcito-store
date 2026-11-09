@@ -165,7 +165,7 @@
     @keyframes aparece { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
     @keyframes bajar { from { transform: translateY(-100%); } to { transform: none; } }
     /* Cartas entran escalonadas (solo al abrir la sección) */
-    .view-section.activa :is(.hub-card, .card, .item, .skeleton, .snack-box, .banner) {
+    .view-section.activa :is(.hub-card, .card, .item, .skeleton, .snack-box, .banner, .game-card, .evento) {
       animation: aparece .5s cubic-bezier(.22,1,.36,1) backwards;
       animation-delay: calc(var(--i, 0) * 55ms + 80ms);
     }
@@ -359,6 +359,37 @@
     .waves-container { position: relative; }
     .waves { height: clamp(120px, 17vw, 190px); }
     .foot-txt { position: absolute; bottom: 12px; left: 0; right: 0; text-align: center; color: rgba(255,255,255,.75); font-size: .85rem; font-weight: 600; line-height: 1.4; }
+
+    /* ===== v4: Hub estilo catálogo ===== */
+    .hub-wrap { max-width: 1000px; margin: 0 auto; text-align: left; }
+    .hub-h { margin: 34px 0 16px; color: var(--pink-header); font-size: 1.3rem; font-weight: 800; }
+    .evento { position: relative; overflow: hidden; border-radius: 24px; padding: 34px 30px; min-height: 230px; display: flex; align-items: center; color: white;
+      background: radial-gradient(circle at 82% 50%, rgba(255,60,60,.45), transparent 55%), linear-gradient(135deg, #1c0507, #5c0b14 55%, #a3121f);
+      box-shadow: 0 14px 34px rgba(120,10,25,.4); }
+    .ev-tag { position: absolute; top: 18px; left: 20px; background: rgba(15,2,4,.8); color: white; font-size: .75rem; font-weight: 700; padding: 5px 12px; border-radius: 10px; }
+    .ev-txt { position: relative; z-index: 2; max-width: 58%; margin-top: 14px; }
+    .ev-txt h3 { margin: 0 0 6px; font-size: 2.3rem; font-weight: 800; }
+    .ev-txt p { margin: 0 0 18px; opacity: .9; }
+    .ev-btn { background: #ff8a3d; color: #2b0a02; border: none; border-radius: 25px; padding: 12px 24px; font: 700 .95rem 'Poppins', sans-serif; cursor: pointer; transition: transform .2s, filter .2s; }
+    .ev-btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+    .ev-ghost { position: absolute; right: 7%; top: 50%; transform: translateY(-50%); font-size: 9rem; line-height: 1; filter: drop-shadow(0 0 28px rgba(255,70,70,.75)); animation: flota 3.5s ease-in-out infinite; }
+    @keyframes flota { 50% { transform: translateY(-58%) rotate(4deg); } }
+    @keyframes flota2 { 50% { transform: translateY(-8px); } }
+    .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 18px; }
+    .game-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px rgba(223,88,139,.15); transition: transform .25s; }
+    .game-card:hover { transform: translateY(-5px); }
+    .game-tile { height: 120px; display: flex; align-items: center; justify-content: center; font-size: 3.4rem; }
+    .game-info { padding: 14px; }
+    .game-info h4 { margin: 0; color: var(--text-dark); font-size: 1rem; }
+    .game-info small { display: block; color: #8a5a6e; margin: 2px 0 12px; font-size: .8rem; }
+    @media (max-width: 600px) {
+      .evento { padding: 64px 20px 24px; min-height: 0; }
+      .ev-txt { max-width: 100%; margin-top: 0; }
+      .ev-txt h3 { font-size: 1.8rem; }
+      .ev-ghost { font-size: 5.5rem; top: 16px; right: 14px; transform: none; animation-name: flota2; }
+      .games-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .game-tile { height: 100px; }
+    }
   </style>
 </head>
 <body class="cargando">
@@ -431,30 +462,16 @@
 
   <div id="views">
   <!-- VISTA: HUB (banners) -->
+  <!-- VISTA: HUB (estilo catálogo) -->
   <main id="vista-hub" class="view-section activa main-container">
     <div class="cursive-title">Elige tu destino ♥</div>
-    <div class="banners" id="hub-banners"></div>
+    <div class="hub-wrap">
+      <div id="hub-evento"></div>
+      <h3 class="hub-h">Minijuegos para ti</h3>
+      <div class="games-grid" id="hub-juegos"></div>
+    </div>
   </main>
 
-  <!-- VISTA: CANVA -->
-  <section id="vista-canva" class="view-section main-container">
-    <button class="btn-volver" onclick="cambiarVista('vista-hub')">⬅ Volver al Inicio</button>
-    <div class="cursive-title">Pequeños juegos hechos para nosotros</div>
-    <div class="cards-grid">
-      <div class="card">
-        <div class="card-img" style="background-image: url('imagen-san-valentin.jpg');"></div>
-        <h3>San Valentín</h3>
-        <div class="badge">♥ Primero en esta página</div>
-        <button class="btn-play">Jugar</button>
-      </div>
-      <div class="card">
-        <div class="card-img" style="background-image: url('imagen-primavera.jpg');"></div>
-        <h3>Primavera del amor</h3>
-        <div class="badge">♥ Más reciente</div>
-        <button class="btn-play">Jugar</button>
-      </div>
-    </div>
-  </section>
 
   <!-- VISTA: TIENDA -->
   <section id="vista-tienda" class="view-section main-container">
@@ -573,7 +590,7 @@
     const loaderInicio = Date.now();
     let loaderOculto = false;
     let msgIdx = 0;
-    const pendientes = new Set(['notis', 'wallet', 'config', 'catalogo', 'inventario', 'tiendas']);
+    const pendientes = new Set(['notis', 'wallet', 'config', 'catalogo', 'inventario', 'evento', 'juegos']);
     function marcar(k) { pendientes.delete(k); if (!pendientes.size) ocultarLoader(); }
     setTimeout(() => ocultarLoader(), 14000);
 
@@ -827,15 +844,17 @@
       ['citas', '🕹️', 'Arcade Solari', 120], ['citas', '🍿', 'Cineplanet VIP', 100], ['citas', '🍫', 'Cata a Ciegas', 60], ['citas', '🎨', 'Arte Feo', 40], ['citas', '🍕', 'Pizzería Casera', 80],
       ['gestos', '💆', 'Masaje VIP', 80], ['gestos', '🧁', 'Repostero Novato', 60], ['gestos', '☕', 'Desayuno Distancia', 72], ['gestos', '🕊️', 'Pase Anti-Enojo', 40]
     ];
-    const TIENDAS_BASE = [
-      { titulo: 'Canva Store', desc: 'Juegos de preguntas y recuerdos hechos a mano.', img: 'canvastore.png', url: 'vista-canva', estilo: 'canva' },
-      { titulo: 'BOO! STORE', desc: 'La mansión del terror. Entra bajo tu propio riesgo.', img: 'boostore.png', url: URL_BOO, estilo: 'boo' }
+    const EVENTO_BASE = { activo: true, etiqueta: 'Evento especial', titulo: 'Boo! Store', desc: 'Un evento de miedo y risas para compartir de a dos.', boton: 'Entrar al evento', emoji: '👻', url: URL_BOO };
+    const JUEGOS_BASE = [
+      { titulo: 'San Valentín', cat: 'Preguntas', emoji: '💌', url: '' },
+      { titulo: 'Primavera del Amor', cat: 'Recuerdos', emoji: '🌸', url: '' }
     ];
+    const TONOS = ['linear-gradient(135deg,#f48fb1,#df588b)', 'linear-gradient(135deg,#ffc1d9,#ff8fb8)', 'linear-gradient(135deg,#b39ddb,#7e57c2)', 'linear-gradient(135deg,#ffd29a,#ff9a76)'];
     let wallet = { hearts: 0, candies: 0 }, config = { tasa: 5, venta: 50 };
-    let catalogo = [], inventario = [], tiendas = TIENDAS_BASE.map(t => ({ ...t })), sembrado = false, convN = 0, tabPanel = 'monedas';
+    let catalogo = [], inventario = [], evento = { ...EVENTO_BASE }, juegos = JUEGOS_BASE.map(j => ({ ...j })), sembrado = false, convN = 0, tabPanel = 'monedas';
 
     function escalonar() {
-      document.querySelectorAll('.hub-card, .card, .item, .skeleton, .banner').forEach(el =>
+      document.querySelectorAll('.hub-card, .card, .item, .skeleton, .banner, .game-card, .evento').forEach(el =>
         el.style.setProperty('--i', Math.min(Array.from(el.parentNode.children).indexOf(el), 10)));
     }
     function setBadge(on) {
@@ -860,15 +879,15 @@
       pintarConv();
     }
     function pintarHub() {
-      $('hub-banners').innerHTML = tiendas.map((t, i) =>
-        `<div class="banner ${esc(t.estilo || '')}" style="background-image:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(60,10,40,.75)),url('${esc(t.img)}')" onclick="abrirTienda(${i})"><div class="banner-txt"><h3>${esc(t.titulo)}</h3><p>${esc(t.desc)}</p></div><span class="banner-go">›</span></div>`).join('')
-        + `<div class="banner soon"><div class="banner-txt"><h3>✨ Próximo juego</h3><p>Aquí aparecerá el siguiente destino.</p></div></div>`;
+      $('hub-evento').innerHTML = evento.activo === false ? '' :
+        `<div class="evento"><span class="ev-tag">${esc(evento.etiqueta)}</span><div class="ev-txt"><h3>${esc(evento.titulo)}</h3><p>${esc(evento.desc)}</p><button class="ev-btn" onclick="abrirEvento()">${esc(evento.boton)}</button></div><div class="ev-ghost">${esc(evento.emoji)}</div></div>`;
+      $('hub-juegos').innerHTML = juegos.map((j, i) =>
+        `<div class="game-card"><div class="game-tile" style="background:${TONOS[i % TONOS.length]}">${esc(j.emoji)}</div><div class="game-info"><h4>${esc(j.titulo)}</h4><small>${esc(j.cat)}</small><button class="btn-buy" onclick="abrirJuego(${i})">Jugar</button></div></div>`).join('');
       escalonar();
     }
-    function abrirTienda(i) {
-      const u = (tiendas[i] && tiendas[i].url) || '';
-      if (u.startsWith('vista-')) cambiarVista(u); else if (u) window.location.href = u;
-    }
+    function irUrl(u) { if (!u) toast('Próximamente ✨'); else if (u.startsWith('vista-')) cambiarVista(u); else window.location.href = u; }
+    function abrirEvento() { irUrl(evento.url); }
+    function abrirJuego(i) { irUrl(juegos[i] && juegos[i].url); }
     function pintarTienda() {
       const act = catalogo.filter(i => i.activo !== false), caja = $('tienda-contenido');
       if (!act.length) { caja.innerHTML = '<p class="vacio-msg">La tienda se está surtiendo ✨</p>'; return; }
@@ -950,7 +969,7 @@
     // ==========================================
     // 9. PANEL ADMIN
     // ==========================================
-    const TABS = [['monedas', '💰 Monedas'], ['catalogo', '🛍️ Catálogo'], ['tickets', '🎟️ Tickets'], ['tiendas', '🏪 Tiendas'], ['avisos', '📣 Avisos']];
+    const TABS = [['monedas', '💰 Monedas'], ['catalogo', '🛍️ Catálogo'], ['tickets', '🎟️ Tickets'], ['tiendas', '🎮 Hub'], ['avisos', '📣 Avisos']];
     function abrirPanel() { $('modal-panel').classList.add('activo'); renderPanel(); }
     function setTab(t) { tabPanel = t; renderPanel(); }
     function renderPanel() {
@@ -998,13 +1017,18 @@
     function borrarTicket(id) { if (confirm('¿Borrar este ticket?')) ref('inventario/' + id).remove(); }
 
     function pTiendas() {
-      return tiendas.map((t, i) => `<div class="p-card"><h4>${esc(t.titulo) || 'Tienda'}</h4>${[['titulo', 'Título'], ['desc', 'Descripción'], ['img', 'Imagen (ej: canvastore.png)'], ['url', 'Enlace o vista (ej: vista-canva)']].map(([k, l]) => `<input class="full-in" placeholder="${l}" value="${esc(t[k])}" onchange="editarTienda(${i},'${k}',this.value)">`).join('')}<button class="p-btn" onclick="borrarTienda(${i})">🗑 Quitar</button></div>`).join('')
-        + `<button class="p-btn full" onclick="nuevaTienda()">＋ Nueva tienda</button><p class="p-note">Se muestran como banners en Inicio, en este orden.</p>`;
+      const campos = (lista, fn) => lista.map(([k, l, v]) => `<input class="full-in" placeholder="${l}" value="${esc(v)}" onchange="${fn}'${k}',this.value)">`).join('');
+      return `<div class="p-card"><h4>🎪 Banner de evento</h4><label class="p-note"><input type="checkbox" ${evento.activo !== false ? 'checked' : ''} onchange="editarEvento('activo',this.checked)"> Mostrar banner</label><br>`
+        + campos([['etiqueta', 'Etiqueta (Evento especial)', evento.etiqueta], ['titulo', 'Título', evento.titulo], ['desc', 'Descripción', evento.desc], ['boton', 'Texto del botón', evento.boton], ['emoji', 'Emoji (👻)', evento.emoji], ['url', 'Enlace', evento.url]], 'editarEvento(') + '</div>'
+        + '<h4 class="p-h">🎮 Minijuegos</h4>'
+        + juegos.map((j, i) => `<div class="p-card">${campos([['titulo', 'Título', j.titulo], ['cat', 'Categoría (Preguntas)', j.cat], ['emoji', 'Emoji', j.emoji], ['url', 'Enlace del juego', j.url]], `editarJuego(${i},`)}<button class="p-btn" onclick="borrarJuego(${i})">🗑 Quitar</button></div>`).join('')
+        + `<button class="p-btn full" onclick="nuevoJuego()">＋ Nuevo minijuego</button><p class="p-note">Sin enlace, el botón dice "Próximamente".</p>`;
     }
-    const guardarTiendas = () => ref('tiendas').set(tiendas).then(okToast);
-    function editarTienda(i, k, v) { tiendas[i][k] = v.trim(); guardarTiendas(); }
-    function borrarTienda(i) { if (confirm('¿Quitar esta tienda del inicio?')) { tiendas.splice(i, 1); guardarTiendas(); } }
-    function nuevaTienda() { tiendas.push({ titulo: 'Nueva tienda', desc: '', img: '', url: '', estilo: '' }); guardarTiendas(); }
+    function editarEvento(k, v) { evento[k] = typeof v === 'string' ? v.trim() : v; ref('evento').set(evento).then(okToast); }
+    const guardarJuegos = () => ref('juegos').set(juegos).then(okToast);
+    function editarJuego(i, k, v) { juegos[i][k] = v.trim(); guardarJuegos(); }
+    function borrarJuego(i) { if (confirm('¿Quitar este minijuego?')) { juegos.splice(i, 1); guardarJuegos(); } }
+    function nuevoJuego() { juegos.push({ titulo: 'Nuevo juego', cat: 'Categoría', emoji: '🎮', url: '' }); guardarJuegos(); }
 
     function pAvisos() {
       return `<div class="p-card"><h4>📣 Notificaciones</h4><button class="p-btn full" onclick="abrirAdminPanel()">＋ Nuevo aviso</button><p class="p-note">Para editar, borrar o marcar como nueva, abre la bandeja de entrada en modo admin.</p></div>`;
@@ -1029,9 +1053,10 @@
     escuchar('inventario', 'inventario', v => {
       inventario = Object.keys(v || {}).map(id => ({ id, ...v[id] })); pintarInventario();
     });
-    escuchar('tiendas', 'tiendas', v => {
-      const arr = Object.values(v || {}).filter(Boolean);
-      tiendas = arr.length ? arr : TIENDAS_BASE.map(t => ({ ...t })); pintarHub();
+    escuchar('evento', 'evento', v => { evento = { ...EVENTO_BASE, ...(v || {}) }; pintarHub(); });
+    escuchar('juegos', 'juegos', v => {
+      const a = Object.values(v || {}).filter(Boolean);
+      juegos = a.length ? a : JUEGOS_BASE.map(j => ({ ...j })); pintarHub();
     });
     pintarHub(); pintarTienda(); pintarInventario(); pintarWallet();
   </script>
