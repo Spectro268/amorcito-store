@@ -1,0 +1,13 @@
+{
+  "id": "/amorcito-store/",
+  "name": "Amorcito Store",
+  "short_name": "Amorcito",
+  "start_url": "/amorcito-store/",
+  "scope": "/amorcito-store/",
+  "display": "standalone",
+  "background_color": "#ffe6ef",
+  "theme_color": "#df588b",
+  "icons": [
+    { "src": "favicon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
