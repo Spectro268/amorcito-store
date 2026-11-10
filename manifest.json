@@ -3,7 +3,7 @@
   "name": "Amorcito Store",
   "short_name": "Amorcito",
   "start_url": "/amorcito-store/",
-  "scope": "/amorcito-store/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffe6ef",
   "theme_color": "#df588b",
